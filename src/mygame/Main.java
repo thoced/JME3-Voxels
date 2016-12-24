@@ -2,6 +2,8 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -59,15 +61,17 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map07.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map05.png",this.assetManager);
        
         
         // instance du chunkmanager
         ChunkManager chunkManager = new ChunkManager(map);
         
         // Création d'un materel
-        Material mat = new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
+        Material mat = new Material(assetManager,"Common/MatDefs/Light/Lighting.j3md");
+       // mat.setColor("Color", ColorRGBA.White);
+        mat.setTexture("DiffuseMap",
+        assetManager.loadTexture("Textures/Textures/grass.jpg"));
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
       
         
@@ -86,6 +90,16 @@ public class Main extends SimpleApplication {
            rootNode.attachChild(geo);
            
        }
+       
+       // Light
+       AmbientLight ambientLight = new AmbientLight();
+       ambientLight.setColor(ColorRGBA.White);
+      // rootNode.addLight(ambientLight);
+       
+       DirectionalLight directionalLight = new DirectionalLight();
+       directionalLight.setColor(ColorRGBA.White);
+       directionalLight.setDirection(new Vector3f(1,0,-2).normalizeLocal());
+       rootNode.addLight(directionalLight);
         
     }
 
