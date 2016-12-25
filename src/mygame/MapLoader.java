@@ -11,6 +11,8 @@ import com.jme3.texture.Image.Format;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.Type;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,8 +31,11 @@ public class MapLoader
     
     // tableau heightmap
     private short[] _heighMapGrid;
-    // tableau du grid 35
+    // tableau du grid 3d
     private short[] _gridMap3d;
+    
+    //debug
+    private Collection debug;
 
     public MapLoader(AssetManager assetManager) 
     {
@@ -45,6 +50,7 @@ public class MapLoader
      
         _assetManager = assetManager;
         
+        debug = new ArrayList();
         // chargement map
         loaderMap();
      
@@ -135,18 +141,21 @@ public class MapLoader
            
         }
         
-        int i=0;
+      
     }
     
     private void prepareGrid(short value,int x, int z)
     {
         for(short y=0;y < value;y++)
-        {
-           _gridMap3d[(y*256)+(z * _heightMap)+x] = 1;
-           
+        { 
+           _gridMap3d[(y*65535)+(z * _heightMap)+x] = 1;
+          
+         
         }
         
-        int i=0;
+        
+       
+        
     }
     
 

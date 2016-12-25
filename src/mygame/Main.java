@@ -62,7 +62,7 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map10.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map09.png",this.assetManager);
        
         
         // instance du chunkmanager
