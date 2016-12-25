@@ -28,6 +28,7 @@ public class MapLoader
     
     private int _widthMap;
     private int _heightMap;
+    private int _zWidth;
     
     // tableau heightmap
     private short[] _heighMapGrid;
@@ -110,6 +111,9 @@ public class MapLoader
                     for(int i=0;i<_gridMap3d.length;i++)
                         _gridMap3d[i] = 0;
                     
+                    // create de ZWith
+                    _zWidth = _widthMap * _heightMap;
+                    
                     // make grid
                     makeGrid3d();
                    
@@ -148,9 +152,8 @@ public class MapLoader
     {
         for(short y=0;y < value;y++)
         { 
-           _gridMap3d[(y*65535)+(z * _heightMap)+x] = 1;
+           _gridMap3d[(y*_zWidth)+(z * _heightMap)+x] = 1;
           
-         
         }
         
         
@@ -173,6 +176,10 @@ public class MapLoader
 
     public int getHeightMap() {
         return _heightMap;
+    }
+
+    public int getzWidth() {
+        return _zWidth;
     }
     
     
