@@ -29,6 +29,8 @@ public class MapLoader
     
     // tableau heightmap
     private short[] _heighMapGrid;
+    // tableau du grid 35
+    private short[] _gridMap3d;
 
     public MapLoader(AssetManager assetManager) 
     {
@@ -43,7 +45,9 @@ public class MapLoader
      
         _assetManager = assetManager;
         
+        // chargement map
         loaderMap();
+     
     }
     
     private void loaderMap()
@@ -95,7 +99,13 @@ public class MapLoader
                     }
                     
                    
+                    // instance du gridmap3d
+                    _gridMap3d = new short[_widthMap * _heightMap * 256];
+                    for(int i=0;i<_gridMap3d.length;i++)
+                        _gridMap3d[i] = 0;
                     
+                    // make grid
+                    makeGrid3d();
                    
                 }
                 
@@ -103,11 +113,46 @@ public class MapLoader
             }
         }
     }
+    
+    private void makeGrid3d()
+    {
+       
+        // on parse le heightmapgrid a partir de la position de monde
+        for(int y = 0;y<_heightMap; y++)
+        {
+            for(int x = 0;x<_widthMap ; x++)
+            {
+                // pour chaque position y on créer le nombre de voxel nécessaire
+                short value = _heighMapGrid[(y * _heightMap) + x];
+                // création de la liste de hauteur de voxels
+                
+               // System.out.println("val X "+ x + "val y " + y + "value:  " + (int)value);
+               // _listVoxels.add(new Voxel(new Vector3f(lx,ly,value),TypeVoxel.BLOC01));
+                prepareGrid(value, x,  y);
+               
+            }
+           
+        }
+    }
+    
+    private void prepareGrid(short value,int x, int z)
+    {
+        for(short y=0;y < value;y++)
+        {
+           _gridMap3d[(y*256)+(z*_heightMap)+x] = 1;
+           
+        }
+    }
+    
 
     public short[] getHeighMapGrid() {
         return _heighMapGrid;
     }
 
+    public short[] getGridMap3d() {
+        return _gridMap3d;
+    }
+        
     public int getWidthMap() {
         return _widthMap;
     }

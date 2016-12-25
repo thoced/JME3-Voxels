@@ -62,7 +62,7 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map09.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map10.png",this.assetManager);
        
         
         // instance du chunkmanager
@@ -88,7 +88,7 @@ public class Main extends SimpleApplication {
            // pour chaque mesh on créer une geometrie
            Geometry geo = new Geometry("chunk",m);
   
-           geo.setLocalTranslation(c.getWorldPosition().x, 0, c.getWorldPosition().y);
+          // geo.setLocalTranslation(c.getWorldPosition().x, 0, c.getWorldPosition().y);
            geo.setMaterial(mat);
            rootNode.attachChild(geo);
            

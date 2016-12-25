@@ -30,7 +30,7 @@ public class Chunk
     
     //private Collection<Voxel> _listVoxels;
     
-    private short[] _gridChunk;
+   // private short[] _gridChunk;
     
     private static int _sizeChunk = 16;
     
@@ -42,10 +42,10 @@ public class Chunk
         _mapLoader = mapLoader;
         // instance du listVoxels
         //_listVoxels = new ArrayList<Voxel>();
-       _gridChunk = new short[65536];
+       //_gridChunk = new short[65536];
        
         // makemeshchunk
-        makeGridChunk();
+        //makeGridChunk();
         // make mesh chunk
         _meshChunk = new Mesh();
         //makeMeshChunk();
@@ -63,22 +63,24 @@ public class Chunk
       Collection<Vector3f> vNorm = new ArrayList<Vector3f>();
       
      
+      int width = _mapLoader.getWidthMap();
+      int height =  _mapLoader.getHeightMap();
       
           
-        for(int z=0;z<16;z++)
+        for(int z=(int)_worldPosition.y; z < (int)_worldPosition.y + 16 ;z++)
         {
-            for(int x=0;x<16;x++)
+            for(int x=(int)_worldPosition.x;x < (int)_worldPosition.x + 16;x++)
             {
                 for(int y=0;y<256;y++)
                 {
-                    if(_gridChunk[(y*256)+(z*16)+x] == 1)
+                    if(_mapLoader.getGridMap3d()[(y*256)+(z*height)+x] == 1)
                     {
                            addRelative.set(x, y, z);
                            int rx = x,ry = y,rz = z;
                            
                            ry = y + 1;
                           
-                            if(ry > 255 || _gridChunk[(ry*256)+(z*16)+x] == 0)
+                            if(ry > 255 || _mapLoader.getGridMap3d()[(ry*256)+(z*height)+x] == 0)
                             {
                                  // top
                                  vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -102,7 +104,7 @@ public class Chunk
                            
                            ry = y - 1;
                           
-                           if(ry < 0 ||  _gridChunk[(ry*256)+(z*16)+x] == 0)
+                           if(ry < 0 ||  _mapLoader.getGridMap3d()[(ry*256)+(z*height)+x] == 0)
                            {
                                 // down
                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
@@ -125,7 +127,7 @@ public class Chunk
                            
                            rx = x + 1;
                            
-                            if(rx > 15 || _gridChunk[(y*256)+(z*16)+rx] == 0)
+                            if(rx > width-1 || _mapLoader.getGridMap3d()[(y*256)+(z*height)+rx] == 0)
                             {
                                  // right
                                  vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
@@ -148,7 +150,7 @@ public class Chunk
                            
                            rx = x - 1;
                            
-                            if(rx < 0 || _gridChunk[(y*256)+(z*16)+rx] == 0)
+                            if(rx < 0 || _mapLoader.getGridMap3d()[(y*256)+(z*height)+rx] == 0)
                             {
                                 // left
                                 vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -171,7 +173,7 @@ public class Chunk
                            
                            rz = z - 1;
                            
-                           if(rz < 0 || _gridChunk[(y*256)+(rz*16)+x] == 0)
+                           if(rz < 0 || _mapLoader.getGridMap3d()[(y*256)+(rz*height)+x] == 0)
                            {
                                 // front
                                 vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
@@ -194,7 +196,7 @@ public class Chunk
                            
                            rz = z + 1;
                           
-                           if(rz > 15|| _gridChunk[(y*256)+(rz*16)+x] == 0)
+                           if(rz > height-1|| _mapLoader.getGridMap3d()[(y*256)+(rz*height)+x] == 0)
                            {
                                 // back
                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
@@ -316,36 +318,7 @@ public class Chunk
           _meshChunk.updateBound();
     }
     
-    private void makeGridChunk()
-    {
-        int lx=0,ly=0;
-        // on parse le heightmapgrid a partir de la position de monde
-        for(int y = (int)_worldPosition.y;y<(int)_worldPosition.y + _sizeChunk ; y++)
-        {
-            for(int x = (int)_worldPosition.x;x<(int)_worldPosition.x + _sizeChunk ; x++)
-            {
-                // pour chaque position y on créer le nombre de voxel nécessaire
-                short value = _mapLoader.getHeighMapGrid()[(y * _mapLoader.getHeightMap()) + x];
-                // création de la liste de hauteur de voxels
-                
-               // System.out.println("val X "+ x + "val y " + y + "value:  " + (int)value);
-               // _listVoxels.add(new Voxel(new Vector3f(lx,ly,value),TypeVoxel.BLOC01));
-                prepareGrid(value, lx,  ly);
-                lx++;
-            }
-            ly++;
-            lx = 0;
-        }
-    }
     
-    private void prepareGrid(short value,int x, int z)
-    {
-        for(short y=0;y < value;y++)
-        {
-           _gridChunk[(y*256)+(z*16)+x] = 1;
-           
-        }
-    }
 
     public Mesh getMeshChunk() {
         return _meshChunk;
