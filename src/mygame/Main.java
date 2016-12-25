@@ -62,7 +62,7 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map08.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map09.png",this.assetManager);
        
         
         // instance du chunkmanager
@@ -73,6 +73,8 @@ public class Main extends SimpleApplication {
        // mat.setColor("Color", ColorRGBA.White);
         mat.setTexture("DiffuseMap",
         assetManager.loadTexture("Textures/Textures/grass02.jpg"));
+        mat.setTexture("SpecularMap", assetManager.loadTexture("Textures/Textures/grass_specular.png"));
+        mat.setColor("Specular",ColorRGBA.White);
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
       
         
@@ -98,7 +100,7 @@ public class Main extends SimpleApplication {
        rootNode.addLight(ambientLight);
        
        DirectionalLight directionalLight = new DirectionalLight();
-       directionalLight.setColor(ColorRGBA.White);
+       directionalLight.setColor(ColorRGBA.Orange);
        directionalLight.setDirection(new Vector3f(1,-0.3f,-2).normalizeLocal());
        rootNode.addLight(directionalLight);
         

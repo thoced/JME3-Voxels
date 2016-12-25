@@ -77,29 +77,32 @@ public class Chunk
                            int rx = x,ry = y,rz = z;
                            
                            ry = y + 1;
-                           if(ry > 255 || _gridChunk[(ry*256)+(z*16)+x] == 0)
-                           {
-                                // top
-                                vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
-                                vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
-                                // TextCoord
-                                vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(1f,0));
-                                vText.add(new Vector2f(1f,1f));
-                                vText.add(new Vector2f(0,1f));
-                                // Normal
-                                vNorm.add(new Vector3f(0,1,0));
-                                vNorm.add(new Vector3f(0,1,0));
-                                vNorm.add(new Vector3f(0,1,0));
-                                vNorm.add(new Vector3f(0,1,0));
-                                
-                               
-                           }
+                          
+                            if(ry > 255 || _gridChunk[(ry*256)+(z*16)+x] == 0)
+                            {
+                                 // top
+                                 vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
+                                 // TextCoord
+                                 vText.add(new Vector2f(0,0)); 
+                                 vText.add(new Vector2f(1f,0));
+                                 vText.add(new Vector2f(1f,1f));
+                                 vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                 vNorm.add(new Vector3f(0,1,0));
+                                 vNorm.add(new Vector3f(0,1,0));
+                                 vNorm.add(new Vector3f(0,1,0));
+                                 vNorm.add(new Vector3f(0,1,0));
+
+
+                            }
+                          
                            
                            ry = y - 1;
-                           if(ry < 0 || _gridChunk[(ry*256)+(z*16)+x] == 0)
+                          
+                           if(ry < 0 ||  _gridChunk[(ry*256)+(z*16)+x] == 0)
                            {
                                 // down
                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
@@ -118,29 +121,33 @@ public class Chunk
                                 vNorm.add(new Vector3f(0,-1,0));
                                
                            }
+                          
                            
                            rx = x + 1;
-                           if(rx > 15 || _gridChunk[(y*256)+(z*16)+rx] == 0)
-                           {
-                                // right
-                                vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
-                                // TextCoord
-                                vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(1f,0));
-                                vText.add(new Vector2f(1f,1f));
-                                vText.add(new Vector2f(0,1f));
-                                 // Normal
-                                vNorm.add(new Vector3f(1,0,0));
-                                vNorm.add(new Vector3f(1,0,0));
-                                vNorm.add(new Vector3f(1,0,0));
-                                vNorm.add(new Vector3f(1,0,0));
-                                
-                           }
+                           
+                            if(rx > 15 || _gridChunk[(y*256)+(z*16)+rx] == 0)
+                            {
+                                 // right
+                                 vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
+                                 // TextCoord
+                                 vText.add(new Vector2f(0,0)); 
+                                 vText.add(new Vector2f(1f,0));
+                                 vText.add(new Vector2f(1f,1f));
+                                 vText.add(new Vector2f(0,1f));
+                                  // Normal
+                                 vNorm.add(new Vector3f(1,0,0));
+                                 vNorm.add(new Vector3f(1,0,0));
+                                 vNorm.add(new Vector3f(1,0,0));
+                                 vNorm.add(new Vector3f(1,0,0));
+
+                            }
+                           
                            
                            rx = x - 1;
+                           
                             if(rx < 0 || _gridChunk[(y*256)+(z*16)+rx] == 0)
                             {
                                 // left
@@ -161,7 +168,9 @@ public class Chunk
                                 
                             }
                            
+                           
                            rz = z - 1;
+                           
                            if(rz < 0 || _gridChunk[(y*256)+(rz*16)+x] == 0)
                            {
                                 // front
@@ -181,8 +190,10 @@ public class Chunk
                                 vNorm.add(new Vector3f(0,0,1));
                                 
                            }
+                          
                            
                            rz = z + 1;
+                          
                            if(rz > 15|| _gridChunk[(y*256)+(rz*16)+x] == 0)
                            {
                                 // back
@@ -202,6 +213,7 @@ public class Chunk
                                 vNorm.add(new Vector3f(0,0,-1));
                                 
                            }
+                           
                     }
                            
                            
