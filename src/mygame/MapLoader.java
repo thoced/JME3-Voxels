@@ -107,6 +107,7 @@ public class MapLoader
                     // make grid
                     makeGrid3d();
                    
+                    int test = 0;
                 }
                 
                 
@@ -133,15 +134,19 @@ public class MapLoader
             }
            
         }
+        
+        int i=0;
     }
     
     private void prepareGrid(short value,int x, int z)
     {
         for(short y=0;y < value;y++)
         {
-           _gridMap3d[(y*256)+(z*_heightMap)+x] = 1;
+           _gridMap3d[(y*256)+(z * _heightMap)+x] = 1;
            
         }
+        
+        int i=0;
     }
     
 
