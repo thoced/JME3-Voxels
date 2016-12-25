@@ -16,6 +16,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;
 import com.jme3.util.BufferUtils;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,7 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map05.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map08.png",this.assetManager);
        
         
         // instance du chunkmanager
@@ -71,7 +72,7 @@ public class Main extends SimpleApplication {
         Material mat = new Material(assetManager,"Common/MatDefs/Light/Lighting.j3md");
        // mat.setColor("Color", ColorRGBA.White);
         mat.setTexture("DiffuseMap",
-        assetManager.loadTexture("Textures/Textures/grass.jpg"));
+        assetManager.loadTexture("Textures/Textures/grass02.jpg"));
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
       
         
@@ -93,12 +94,12 @@ public class Main extends SimpleApplication {
        
        // Light
        AmbientLight ambientLight = new AmbientLight();
-       ambientLight.setColor(ColorRGBA.White);
-      // rootNode.addLight(ambientLight);
+       ambientLight.setColor(ColorRGBA.Blue);
+       rootNode.addLight(ambientLight);
        
        DirectionalLight directionalLight = new DirectionalLight();
        directionalLight.setColor(ColorRGBA.White);
-       directionalLight.setDirection(new Vector3f(1,0,-2).normalizeLocal());
+       directionalLight.setDirection(new Vector3f(1,-0.3f,-2).normalizeLocal());
        rootNode.addLight(directionalLight);
         
     }

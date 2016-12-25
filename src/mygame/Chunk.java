@@ -204,7 +204,8 @@ public class Chunk
         
       Collection<Vector3f> vBuff = new ArrayList<Vector3f>();
       Collection<Vector2f> vText = new ArrayList<Vector2f>();
-    
+      Collection<Vector3f> vNorm = new ArrayList<Vector3f>();
+      
      
       
           
@@ -216,7 +217,7 @@ public class Chunk
                 {
                     if(_gridChunk[(y*256)+(z*16)+x] == 1)
                     {
-                           addRelative.set(x, y, z);//.add(new Vector3f(_worldPosition.x,0,_worldPosition.y));
+                           addRelative.set(x, y, z);
                            int rx = x,ry = y,rz = z;
                            
                            ry = y + 1;
@@ -227,11 +228,16 @@ public class Chunk
                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
                                 vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
                                 vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
-                                
+                                // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                // Normal
+                                vNorm.add(new Vector3f(0,1,0));
+                                vNorm.add(new Vector3f(0,1,0));
+                                vNorm.add(new Vector3f(0,1,0));
+                                vNorm.add(new Vector3f(0,1,0));
                                 
                                
                            }
@@ -246,9 +252,14 @@ public class Chunk
                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
                                 // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                vNorm.add(new Vector3f(0,-1,0));
+                                vNorm.add(new Vector3f(0,-1,0));
+                                vNorm.add(new Vector3f(0,-1,0));
+                                vNorm.add(new Vector3f(0,-1,0));
                                
                            }
                            
@@ -262,9 +273,14 @@ public class Chunk
                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
                                 // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                vNorm.add(new Vector3f(1,0,0));
+                                vNorm.add(new Vector3f(1,0,0));
+                                vNorm.add(new Vector3f(1,0,0));
+                                vNorm.add(new Vector3f(1,0,0));
                                 
                            }
                            
@@ -278,9 +294,14 @@ public class Chunk
                                 vBuff.add(new Vector3f(-.5f,-.5f,+.5f).add(addRelative));
                                 // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                vNorm.add(new Vector3f(-1,0,0));
+                                vNorm.add(new Vector3f(-1,0,0));
+                                vNorm.add(new Vector3f(-1,0,0));
+                                vNorm.add(new Vector3f(-1,0,0));
                                 
                             }
                            
@@ -294,9 +315,14 @@ public class Chunk
                                 vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
                                 // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
                                 
                            }
                            
@@ -310,9 +336,14 @@ public class Chunk
                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
                                 // TextCoord
                                 vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(.5f,0));
-                                vText.add(new Vector2f(.5f,.5f));
-                                vText.add(new Vector2f(0,.5f));
+                                vText.add(new Vector2f(1f,0));
+                                vText.add(new Vector2f(1f,1f));
+                                vText.add(new Vector2f(0,1f));
+                                 // Normal
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
                                 
                            }
                     }
@@ -405,10 +436,13 @@ public class Chunk
             Vector3f[] vb = vBuff.toArray(new Vector3f[vBuff.size()]);
             // Textcoord
             Vector2f[] tb = vText.toArray(new Vector2f[vText.size()]);
+            // Normal
+            Vector3f[] vn = vNorm.toArray(new Vector3f[vNorm.size()]);
             
             _meshChunk.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vb));
             _meshChunk.setBuffer(Type.Index, 3 ,BufferUtils.createIntBuffer(ind));   
             _meshChunk.setBuffer(Type.TexCoord,2,BufferUtils.createFloatBuffer(tb));
+            _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(vn));
                    
        
           _meshChunk.updateBound();
