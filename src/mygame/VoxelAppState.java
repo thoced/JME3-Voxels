@@ -16,6 +16,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,10 @@ public class VoxelAppState extends AbstractAppState {
     
     private Chunk[] _gridChunk;
     
+    private Node _nodeVoxelChunk;
+    
+    private Material _mat;
+    
     @Override
     public void initialize(AppStateManager stateManager, Application app)
     {
@@ -41,7 +46,7 @@ public class VoxelAppState extends AbstractAppState {
         
         _app = app;
         // chargement de la map
-        _map = new MapLoader("Textures/map01/map07.png",app.getAssetManager());
+        _map = new MapLoader("Textures/map01/map09.png",app.getAssetManager());
                  
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
@@ -54,15 +59,19 @@ public class VoxelAppState extends AbstractAppState {
     private void manageChunk()
     {
          // Création d'un material
-        Material mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
-        mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
-        mat.setTexture("DiffuseMap",
+        _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
+        _mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
+        _mat.setTexture("DiffuseMap",
         _app.getAssetManager().loadTexture("Textures/Textures/rock.jpg"));
-        mat.setTexture("NormalMap", 
+        _mat.setTexture("NormalMap", 
                 _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
-        mat.setFloat("Shininess", 64f);  // [0,128]
-        mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
+        _mat.setFloat("Shininess", 64f);  // [0,128]
+        _mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
        
+        // creation du nodeVoxelChunk
+        _nodeVoxelChunk = new Node();
+        _nodeVoxelChunk.setName("NODE_VOXEL_CHUNK");
+        
       int lx=0,ly=0;
       for(int y=0;y<_map.getHeightMap();y+=16)
       { 
@@ -76,20 +85,26 @@ public class VoxelAppState extends AbstractAppState {
               // ajout dans le scene graph
               // pour chaque chunk, on récupère le mesh
               Mesh m = c.getMeshChunk();
-              // pour chaque mesh on créer une geometrie
-              Geometry geo = new Geometry(c.getNameChunk(),m);
-              geo.setMaterial(mat);
-              ((SimpleApplication)_app).getRootNode().attachChild(geo);
-              
+              // ajout du node
+              addNode(m,c.getNameChunk());  
               lx++;
              
           }
           ly++;
           lx = 0;
           
-          
-          
       }
+      
+       ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunk);
+    }
+    
+    private void addNode(Mesh m,String name)
+    {
+         // pour chaque mesh on créer une geometrie
+         Geometry geo = new Geometry(name,m);
+         geo.setMaterial(_mat);
+         // ajout dans le node délégué au Chunk
+         _nodeVoxelChunk.attachChild(geo);
     }
     
     public void addVoxelToGrid(Vector3f p)
@@ -101,18 +116,23 @@ public class VoxelAppState extends AbstractAppState {
         // appel à la methode update du chunk
         if(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x] != null)
         {
+            // update du chunk (remesh)
             _gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].updateMeshChunk();
-            
-            // modification du node
+            //detachement du node
             String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
-            Spatial s = ((SimpleApplication)_app).getRootNode().getChild(nameChunkSearch);
-            if(s != null)
-                ((Geometry)s).setMesh(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].getMeshChunk());
-           
+            _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
+            // ajout du nouveau node avec le nouveau mesh
+            this.addNode(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].getMeshChunk(), nameChunkSearch);
+
         }
+             
         
     }
-    
+
+    public Node getNodeVoxelChunk() {
+        return _nodeVoxelChunk;
+    }
+
     @Override
     public void update(float tpf) {
         //TODO: implement behavior during runtime
