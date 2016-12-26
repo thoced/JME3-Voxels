@@ -70,14 +70,14 @@ public class Main extends SimpleApplication implements ActionListener{
         this.getFlyByCamera().setMoveSpeed(64.0f);
         // distance de vue
         this.getCamera().setFrustumFar(256);
-        this.guiViewPort.setBackgroundColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
+        this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
         // Fog
          /** Add fog to a scene */
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter();
-        fog.setFogColor(new ColorRGBA(0.9f, 0.9f, 0.9f, 1.0f));
+        fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
         fog.setFogDistance(212);
-        fog.setFogDensity(1.8f);
+        fog.setFogDensity(1.2f);
         fpp.addFilter(fog);
         viewPort.addProcessor(fpp);
 
