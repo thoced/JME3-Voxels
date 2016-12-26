@@ -5,6 +5,7 @@
  */
 package mygame;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -58,6 +59,7 @@ public class Chunk
     public void updateMeshChunk()
     {
         // update du chunk car une modification a eu lieu
+        // suppresion des vertexBuffer
         _meshChunk.clearBuffer(Type.Position);
         _meshChunk.clearBuffer(Type.TexCoord);
         _meshChunk.clearBuffer(Type.Index);
@@ -65,8 +67,7 @@ public class Chunk
         
         // appel au makemeshchunk
         makeMeshChunk();
-        
-        
+ 
     }
     
     private void makeMeshChunk()
@@ -237,84 +238,23 @@ public class Chunk
                 }
             }
         }
-        
-        /*
-        // ----------
-        for(int z=0;z<16;z++)
-        {
-            for(int x=0;x<16;x++)
-            {
-               for(int y=0;y<256;y++)
-               {
-                   if(_gridChunk[(y*256)+(z*16)+x] == 1)
-                   {
-                       int rx = x,ry = y,rz = z;
-                       Vector3f addRelative = new Vector3f(x,y,z);//.add(new Vector3f(_worldPosition.x,0,_worldPosition.y));
-                       
-                       // top
-                       ry = y + 1;
-                       if(ry > 255 || _gridChunk[(ry*256)+(rz*16)+rx] == 0)
-                       {
-                          
-                           vBuff.add(new Vector3f(-1f,+1f,+1f).add(addRelative));
-                           vBuff.add(new Vector3f(+1f,+1f,+1f).add(addRelative));
-                           vBuff.add(new Vector3f(+1f,+1f,-1f).add(addRelative));
-                           vBuff.add(new Vector3f(-1f,+1f,-1f).add(addRelative));
-                          
-                         
-                       }
-                       /*
-                       // down
-                       rz = z - 1;
-                       if(rz < 0 || _gridChunk[(rz*256)+(ry*16)+rx] == 0)
-                       {
-                         
-                           
-                           
-                           vBuff.add(new Vector3f(-1f,-1f,+1f).add(addRelative));
-                           vBuff.add(new Vector3f(+1f,-1f,+1f).add(addRelative));
-                           vBuff.add(new Vector3f(+1f,-1f,-1f).add(addRelative));
-                           vBuff.add(new Vector3f(-1f,-1f,-1f).add(addRelative));
-                            
-                       }
-                       /*
-                       // right
-                       rx = x + 1;
-                       if(rx > 16 || _gridChunk[(rz*256)+(ry*16)+rx] == 0)
-                       {
-                           
-                           box[1] = new Vector3f(+.5f,+.5f,+.5f);
-                           box[2] = new Vector3f(+.5f,+.5f,-.5f);
-                           box[2] = new Vector3f(+.5f,-.5f,-.5f);
-                           box[3] = new Vector3f(-.5f,-.5f,+.5f);
-                       }
-                       
-                    
-                   
-                     
-                   }
-               }
-            }
-            
-            
-        }
-        */
+          
            // indices
                        
  
-                        int[] ind = new int[(vBuff.size() / 4) * 6];
-                        int i=0;
-                        for(int j=0;j<ind.length;j+=6)
-                        {
-                           ind[j] = 0+(i*4);
-                           ind[j+1] = 1+(i*4);
-                           ind[j+2] = 2+(i*4);
+         int[] ind = new int[(vBuff.size() / 4) * 6];
+         int i=0;
+         for(int j=0;j<ind.length;j+=6)
+         {
+           ind[j] = 0+(i*4);
+           ind[j+1] = 1+(i*4);
+           ind[j+2] = 2+(i*4);
                            
-                           ind[j+3] = 2+(i*4);
-                           ind[j+4] = 3+(i*4);
-                           ind[j+5] = 0+(i*4);
-                           i++;
-                        }
+           ind[j+3] = 2+(i*4);
+           ind[j+4] = 3+(i*4);
+           ind[j+5] = 0+(i*4);
+           i++;
+          }
            // 0,1,2 2,3,0
                        
             // vertexbuffer
@@ -329,8 +269,11 @@ public class Chunk
             _meshChunk.setBuffer(Type.TexCoord,2,BufferUtils.createFloatBuffer(tb));
             _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(vn));
                    
-       
-          _meshChunk.updateBound();
+  
+         // updtae du boundingBox
+         _meshChunk.updateBound();
+         // creation du mesh de collision
+         _meshChunk.createCollisionData();
     }
     
     
