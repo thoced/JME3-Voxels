@@ -270,7 +270,7 @@ public class Chunk
             _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(vn));
                    
   
-         // updtae du boundingBox
+         // update du boundingBox
          _meshChunk.updateBound();
          // creation du mesh de collision
          _meshChunk.createCollisionData();

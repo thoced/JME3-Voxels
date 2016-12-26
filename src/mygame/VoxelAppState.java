@@ -128,6 +128,39 @@ public class VoxelAppState extends AbstractAppState {
              
         
     }
+    
+    public void subVoxelToGrid(Vector3f p)
+    {
+        // suppresion du voxel dans la grid3d generale
+        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] = 0;
+         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
+        Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
+        // appel à la methode update du chunk ainsi que les 8 autres chunk
+        for(int dy=-1;dy<2;dy++)
+        {
+            for(int dx=-1;dx<2;dx++)
+            {
+                try
+                {
+                    if(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx] != null)
+                    {
+                        // update du chunk (remesh) ainsi que les 8 autres chunk 
+                        _gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].updateMeshChunk();
+                        //detachement du node
+                        String nameChunkSearch = "[" + (int)chunkPos.x + dx + "][" + (int)chunkPos.y + dy + "]";
+                        _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
+                        // ajout du nouveau node avec le nouveau mesh
+                        this.addNode(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].getMeshChunk(), nameChunkSearch);
+
+                    }
+                }
+                catch(ArrayIndexOutOfBoundsException a)
+                {
+                    
+                }
+            }
+        }
+    }
 
     public Node getNodeVoxelChunk() {
         return _nodeVoxelChunk;
