@@ -7,6 +7,7 @@ package mygame;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -16,15 +17,18 @@ import java.util.Collection;
  */
 public class ChunkManager 
 {
+    private Node _rootNode; // root node du scene graph
+    
     private MapLoader _mapLoader;
     
     private Collection<Chunk> _listChunks;
     
     private Chunk[] _gridChunk;
     
-    public ChunkManager(MapLoader mapLoader) 
+    public ChunkManager(MapLoader mapLoader,Node rootNode) 
     {
         _mapLoader = mapLoader;
+        _rootNode = rootNode;
         _listChunks = new ArrayList<Chunk>();
         
         _gridChunk = new Chunk[_mapLoader.getWidthMap() * _mapLoader.getHeightMap()];
@@ -34,6 +38,7 @@ public class ChunkManager
     
     private void manageChunk()
     {
+       
       for(int y=0;y<_mapLoader.getHeightMap();y+=16)
       { 
           for(int x=0;x<_mapLoader.getWidthMap();x+=16)
@@ -43,6 +48,8 @@ public class ChunkManager
               _listChunks.add(c);
               // ajout dans un grid pour pouvoir y accéder plus rapidement
               _gridChunk[(y * _mapLoader.getHeightMap()) + x] = c;
+              // ajout dans le scene graph
+          
              
           }
           

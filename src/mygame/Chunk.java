@@ -22,6 +22,8 @@ import mygame.Voxel.TypeVoxel;
  */
 public class Chunk
 {
+    private String _nameChunk;
+    
     private Vector2f _worldPosition;
     
     private MapLoader _mapLoader;
@@ -40,6 +42,7 @@ public class Chunk
     {
         _worldPosition = worldPosition;
         _mapLoader = mapLoader;
+        _nameChunk = "[" + (int)_worldPosition.x + "][" + (int)_worldPosition.y + "]"; 
         // instance du listVoxels
         //_listVoxels = new ArrayList<Voxel>();
        //_gridChunk = new short[65536];
@@ -49,11 +52,24 @@ public class Chunk
         // make mesh chunk
         _meshChunk = new Mesh();
         //makeMeshChunk();
-        makeMeshChunkV2();
+        makeMeshChunk();
     }
     
+    public void updateMeshChunk()
+    {
+        // update du chunk car une modification a eu lieu
+        _meshChunk.clearBuffer(Type.Position);
+        _meshChunk.clearBuffer(Type.TexCoord);
+        _meshChunk.clearBuffer(Type.Index);
+        _meshChunk.clearBuffer(Type.Normal);
+        
+        // appel au makemeshchunk
+        makeMeshChunk();
+        
+        
+    }
     
-    private void makeMeshChunkV2()
+    private void makeMeshChunk()
     {
      
       Vector3f addRelative = new Vector3f();
@@ -325,6 +341,14 @@ public class Chunk
 
     public Vector2f getWorldPosition() {
         return _worldPosition;
+    }
+
+    public String getNameChunk() {
+        return _nameChunk;
+    }
+
+    public void setNameChunk(String _nameChunk) {
+        this._nameChunk = _nameChunk;
     }
 
     
