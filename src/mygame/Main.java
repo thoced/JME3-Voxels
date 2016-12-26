@@ -7,6 +7,9 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -29,6 +32,11 @@ import jme3tools.optimize.GeometryBatchFactory;
  */
 public class Main extends SimpleApplication {
 
+    private DirectionalLight directionalLight;
+    private Vector3f[] dirLight;
+    
+    private double angle = 0f;
+    
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
@@ -37,7 +45,7 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleInitApp() {
        
-        this.getFlyByCamera().setMoveSpeed(32.0f);
+        this.getFlyByCamera().setMoveSpeed(64.0f);
         
         // mesh 01
         Mesh mesh = new Mesh();
@@ -62,7 +70,7 @@ public class Main extends SimpleApplication {
         
      
         // chargement de la map
-        MapLoader map = new MapLoader("Textures/map01/map05.png",this.assetManager);
+        MapLoader map = new MapLoader("Textures/map01/map07.png",this.assetManager);
        
         
         // instance du chunkmanager
@@ -70,11 +78,17 @@ public class Main extends SimpleApplication {
         
         // Création d'un materel
         Material mat = new Material(assetManager,"Common/MatDefs/Light/Lighting.j3md");
-       // mat.setColor("Color", ColorRGBA.White);
+        mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
+        
         mat.setTexture("DiffuseMap",
-        assetManager.loadTexture("Textures/Textures/grass02.jpg"));
-        mat.setTexture("SpecularMap", assetManager.loadTexture("Textures/Textures/grass_specular.png"));
-        mat.setColor("Specular",ColorRGBA.White);
+        assetManager.loadTexture("Textures/Textures/rock.jpg"));
+        
+        mat.setTexture("NormalMap", 
+                assetManager.loadTexture("Textures/Textures/rock_n.jpg"));
+        
+        mat.setFloat("Shininess", 64f);  // [0,128]
+      //  mat.setTexture("SpecularMap", assetManager.loadTexture("Textures/Textures/grass_specular.png"));
+        //mat.setColor("Specular",ColorRGBA.White);
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
       
         
@@ -92,23 +106,31 @@ public class Main extends SimpleApplication {
            geo.setMaterial(mat);
            rootNode.attachChild(geo);
            
+          
+           
        }
        
        // Light
        AmbientLight ambientLight = new AmbientLight();
-       ambientLight.setColor(ColorRGBA.Blue);
+       ambientLight.setColor(new ColorRGBA((1f/255f)*157f,1f,(1f/255f)*242f,1f));
        rootNode.addLight(ambientLight);
        
-       DirectionalLight directionalLight = new DirectionalLight();
-       directionalLight.setColor(ColorRGBA.Orange);
-       directionalLight.setDirection(new Vector3f(1,-0.3f,-2).normalizeLocal());
+       directionalLight = new DirectionalLight();
+       directionalLight.setColor(new ColorRGBA(1,1,1,1));
+       directionalLight.setDirection(new Vector3f(0.5f,-0.5f,-0.5f).normalizeLocal());
        rootNode.addLight(directionalLight);
+  
+       
         
     }
 
     @Override
-    public void simpleUpdate(float tpf) {
-        //TODO: add update code
+    public void simpleUpdate(float tpf)
+    {
+          
+        
+              
+   
     }
 
     @Override
