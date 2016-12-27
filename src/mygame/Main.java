@@ -116,8 +116,14 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("SUB_VOXEL", 
                 new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
+        inputManager.addMapping("ADD_LIGHTPROBE", 
+                new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        
+        
+        
         inputManager.addListener(this, "ADD_VOXEL");
         inputManager.addListener(this, "SUB_VOXEL");
+        inputManager.addListener(this, "ADD_LIGHTPROBE");
      }
      
      private void initMark()
@@ -184,6 +190,12 @@ public class Main extends SimpleApplication implements ActionListener{
                         // position du voxel a supprimer
                           Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
                          _voxelAppState.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
+                    }
+                    
+                    if(name.equals("ADD_LIGHTPROBE"))
+                    {
+                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                         _voxelAppState.addLightProbe(voxelPos.add(_offsetVoxel));
                     }
                         
                 }

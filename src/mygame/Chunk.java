@@ -326,7 +326,13 @@ public class Chunk implements Savable
          _meshChunk.createCollisionData();
     }
     
-    
+    public void updateLightProbeColor()
+    {
+        _meshChunk.clearBuffer(Type.Color);
+        
+        _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(_cb));
+    }
+            
 
     public Mesh getMeshChunk() {
         return _meshChunk;
@@ -354,6 +360,10 @@ public class Chunk implements Savable
 
     public Vector2f[] getTextCoordBuffer() {
         return _tb;
+    }
+
+    public ColorRGBA[] getColorBuffer() {
+        return _cb;
     }
     
     
