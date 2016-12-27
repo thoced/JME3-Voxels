@@ -32,6 +32,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.BufferUtils;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -71,6 +74,25 @@ public class Main extends SimpleApplication implements ActionListener{
         // distance de vue
         this.getCamera().setFrustumFar(256);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
+       
+       // viewPort.addProcessor(fpp);
+
+       // creation du AppStateVoxel
+        _voxelAppState = new VoxelAppState();
+        this.stateManager.attach(_voxelAppState);
+            
+       // Light
+       AmbientLight ambientLight = new AmbientLight();
+      // ambientLight.setColor(new ColorRGBA((1f/255f)*157f,1f,(1f/255f)*242f,1f));
+       ambientLight.setColor(new ColorRGBA(0.5f,0.4f,0.4f,1));
+       rootNode.addLight(ambientLight);
+       
+       directionalLight = new DirectionalLight();
+       directionalLight.setColor(new ColorRGBA(0.6f,0.6f,0.5f,1));
+       directionalLight.setDirection(new Vector3f(0.5f,-0.8f,-0.3f).normalizeLocal());
+       rootNode.addLight(directionalLight);
+       
+       // fog
         // Fog
          /** Add fog to a scene */
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
@@ -79,21 +101,23 @@ public class Main extends SimpleApplication implements ActionListener{
         fog.setFogDistance(212);
         fog.setFogDensity(1.2f);
         fpp.addFilter(fog);
-        viewPort.addProcessor(fpp);
-
-       // creation du AppStateVoxel
-        _voxelAppState = new VoxelAppState();
-        this.stateManager.attach(_voxelAppState);
-            
-       // Light
-       AmbientLight ambientLight = new AmbientLight();
-       ambientLight.setColor(new ColorRGBA((1f/255f)*157f,1f,(1f/255f)*242f,1f));
-       rootNode.addLight(ambientLight);
        
-       directionalLight = new DirectionalLight();
-       directionalLight.setColor(new ColorRGBA(1,0.5f,0.5f,1));
-       directionalLight.setDirection(new Vector3f(0.5f,-0.8f,-0.3f).normalizeLocal());
-       rootNode.addLight(directionalLight);
+       // experimantal shadow directional
+       /* Drop shadows */
+        final int SHADOWMAP_SIZE=4096;
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setLight(directionalLight);
+        dlsr.setEdgesThickness(1);
+        dlsr.setRenderBackFacesShadows(true);
+        dlsr.setShadowIntensity(0.65f);
+        viewPort.addProcessor(dlsr);
+        
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
+        dlsf.setLight(directionalLight);
+        dlsf.setEnabled(true);
+       // FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
   
        // initKeys
        this.initKeys();
