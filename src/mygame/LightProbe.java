@@ -39,7 +39,9 @@ public class LightProbe
         
         for(CollisionResult r : results)
         {
-            
+           // pour chaque geometry, on récupère le chunk
+           Chunk c = r.getGeometry().getUserData("CHUNK");
+           
         }
        
     }
