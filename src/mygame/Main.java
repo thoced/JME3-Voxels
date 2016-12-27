@@ -52,9 +52,11 @@ public class Main extends SimpleApplication implements ActionListener{
     private VoxelAppState _voxelAppState;
     
     private DirectionalLight directionalLight;
-    private Vector3f[] dirLight;
+   
     
-    private double angle = 0f;
+    private double _angle = 5;
+    private double _backAngle = 5;
+ 
     
     private Ray _rayView;
     private CollisionResults _viewCollisionResults;
@@ -104,12 +106,12 @@ public class Main extends SimpleApplication implements ActionListener{
        
        // experimantal shadow directional
        /* Drop shadows */
-        final int SHADOWMAP_SIZE=4096;
+        final int SHADOWMAP_SIZE=5120;
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(directionalLight);
-        dlsr.setEdgesThickness(1);
+        dlsr.setEdgesThickness(12);
         dlsr.setRenderBackFacesShadows(true);
-        dlsr.setShadowIntensity(0.65f);
+        dlsr.setShadowIntensity(0.55f);
         viewPort.addProcessor(dlsr);
         
         DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
@@ -170,7 +172,30 @@ public class Main extends SimpleApplication implements ActionListener{
              _mark.setLocalTranslation(result.getContactPoint());
              
           }
-              
+           
+      // mouvement de lumière
+      Quaternion q = new Quaternion();
+      q.fromAngleAxis((float) Math.toRadians(_angle), new Vector3f(1,0,0));
+           
+      _angle+= (2f * tpf);
+      
+      
+      if(_angle > 175f)
+      {
+          //rootNode.removeLight(directionalLight);
+           _angle = 5f;
+          
+      }
+       
+     // rootNode.removeLight(directionalLight);
+     if(Math.abs(_angle - _backAngle) > 0.1f)
+     {
+      _backAngle = _angle;
+      directionalLight.setDirection(q.getRotationColumn(2).normalizeLocal().add(new Vector3f(0.5f,-0.8f,-0.3f)));
+     
+     }
+     // rootNode.addLight(directionalLight);
+     // directionalLight.setDirection(_offsetVoxel);
    
     }
 
