@@ -161,6 +161,11 @@ public class VoxelAppState extends AbstractAppState {
             }
         }
     }
+    
+    public void addLightProbe(Vector3f p)
+    {
+        
+    }
 
     public Node getNodeVoxelChunk() {
         return _nodeVoxelChunk;
