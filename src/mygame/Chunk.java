@@ -6,6 +6,7 @@
 package mygame;
 
 import com.jme3.bounding.BoundingBox;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -114,7 +115,8 @@ public class Chunk
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
 
-
+                                
+                                 
                             }
                           
                            
@@ -269,6 +271,7 @@ public class Chunk
             _meshChunk.setBuffer(Type.TexCoord,2,BufferUtils.createFloatBuffer(tb));
             _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(vn));
                    
+            
   
          // update du boundingBox
          _meshChunk.updateBound();
