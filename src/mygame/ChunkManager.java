@@ -59,7 +59,7 @@ public class ChunkManager
     public void addVoxelToGrid(Vector3f p)
     {
         // ajout du voxel dans la grid3d generale
-        _mapLoader.getGridMap3d()[((int)p.y*_mapLoader.getzWidth()) + ((int)p.z * _mapLoader.getHeightMap()) +(int) p.x] = 1;
+        _mapLoader.getGridMap3d()[((int)p.y*_mapLoader.getzWidth()) + ((int)p.z * _mapLoader.getHeightMap()) +(int) p.x]._type = 1;
         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         

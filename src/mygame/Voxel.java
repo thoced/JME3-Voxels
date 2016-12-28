@@ -13,37 +13,19 @@ import com.jme3.math.Vector3f;
  */
 public class Voxel 
 {
-    private Vector3f _localPosition;
+    public int _type = 0;
     
-    private TypeVoxel _typeVoxel;
-    
-    public enum TypeVoxel
+    public float _lightFactor = 0f; 
+
+    public Voxel()
     {
-        BLOC01,
-        BLOC02,
     }
     
-    public Voxel(Vector3f localPosition,TypeVoxel typeVoxel) 
+    public Voxel(int type)
     {
-        _localPosition = localPosition;
-        _typeVoxel = typeVoxel;
+        _type = type;
     }
-
-    public Vector3f getLocalPosition() {
-        return _localPosition;
-    }
-
-    public void setLocalPosition(Vector3f _localPosition) {
-        this._localPosition = _localPosition;
-    }
-
-    public TypeVoxel getTypeVoxel() {
-        return _typeVoxel;
-    }
-
-    public void setTypeVoxel(TypeVoxel _typeVoxel) {
-        this._typeVoxel = _typeVoxel;
-    }
+    
     
     
 }

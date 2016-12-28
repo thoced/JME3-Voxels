@@ -24,7 +24,7 @@ import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import mygame.Voxel.TypeVoxel;
+
 
 /**
  *
@@ -112,13 +112,13 @@ public class Chunk implements Savable
             {
                 for(int y=0;y<256;y++)
                 {
-                    if(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x] == 1)
+                    if(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x]._type == 1)
                     {
                            addRelative.set(x, y, z);
                            int rx = x,ry = y,rz = z;
                            
                             ry = y + 1;
-                            if(ry > 255 || _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] == 0)
+                            if(ry > 255 || _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x]._type == 0)
                             {
                                  // top
                                  vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -150,7 +150,7 @@ public class Chunk implements Savable
                            ry = y - 1;
                           
                           
-                            if(ry < 0 ||  _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] == 0)
+                            if(ry < 0 ||  _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x]._type == 0)
                             {
                                  // down
                                  vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
@@ -179,7 +179,7 @@ public class Chunk implements Savable
                            
                            rx = x + 1;
                            
-                            if(rx > width-1 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] == 0)
+                            if(rx > width-1 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx]._type == 0)
                             {
                                  // right
                                  vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
@@ -207,7 +207,7 @@ public class Chunk implements Savable
                            
                            rx = x - 1;
                            
-                            if(rx < 0 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] == 0)
+                            if(rx < 0 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx]._type == 0)
                             {
                                 // left
                                 vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -236,7 +236,7 @@ public class Chunk implements Savable
                            
                            rz = z - 1;
                            
-                           if(rz < 0 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] == 0)
+                           if(rz < 0 || _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x]._type == 0)
                            {
                                 // front
                                 vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
@@ -264,7 +264,7 @@ public class Chunk implements Savable
                            
                            rz = z + 1;
                           
-                           if(rz > height-1|| _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] == 0)
+                           if(rz > height-1|| _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x]._type == 0)
                            {
                                 // back
                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
