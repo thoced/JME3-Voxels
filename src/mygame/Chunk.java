@@ -6,10 +6,14 @@
 package mygame;
 
 import com.jme3.bounding.BoundingBox;
+
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
 import com.jme3.math.ColorRGBA;
+
+import com.jme3.math.Ray;
+
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -135,7 +139,8 @@ public class Chunk implements Savable
                                  vColor.add(new ColorRGBA(1,1,1,1));
                                  
 
-
+                                
+                                 
                             }
                           
                            
@@ -319,6 +324,7 @@ public class Chunk implements Savable
             _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(_vn));
             _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(_cb));
                    
+            
   
          // update du boundingBox
          _meshChunk.updateBound();

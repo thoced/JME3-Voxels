@@ -14,6 +14,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -60,12 +61,16 @@ public class VoxelAppState extends AbstractAppState {
     {
          // Création d'un material
         _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
+
         _mat.setBoolean("UseVertexColor",true);
-        _mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
+        _mat.setColor("Diffuse", new ColorRGBA(0.2f,0.2f,0.2f,1));
+        
         _mat.setTexture("DiffuseMap",
         _app.getAssetManager().loadTexture("Textures/Textures/rock.jpg"));
         _mat.setTexture("NormalMap", 
                 _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
+        _mat.setBoolean("UseMaterialColors", false);
+        _mat.setBoolean("VertexLighting", true);
         _mat.setFloat("Shininess", 64f);  // [0,128]
         _mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
        
@@ -102,8 +107,14 @@ public class VoxelAppState extends AbstractAppState {
          // pour chaque mesh on créer une geometrie
          Geometry geo = new Geometry(name,chunk.getMeshChunk());
          geo.setMaterial(_mat);
+
          // ajout de la reference du chunk dans le user data
          geo.setUserData("CHUNK",chunk);
+         
+         // on specifie que le chunk peut emettre une shadow et en recevoir
+         geo.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+         
+
          // ajout dans le node délégué au Chunk
          _nodeVoxelChunk.attachChild(geo);
     }
