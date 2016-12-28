@@ -80,14 +80,13 @@ public class LightProbe
                         {
                             // il n'y a pas de collision, on applique de la lumière
                             cb[i].addLocal(ColorRGBA.White);
-                            
-                            
+ 
                         }
                         
                     }
                 }
                 
-                c.updateLightProbeColor(cb);
+                c.updateLightProbeColor();
             }
         }
         
