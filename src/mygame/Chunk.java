@@ -90,27 +90,37 @@ public class Chunk implements Savable
         _meshChunk.clearBuffer(Type.Normal);
         _meshChunk.clearBuffer(Type.Color);
         
-        //reset lightFactor dans le chunk
-         for(int z=(int)_worldPosition.y; z < (int)_worldPosition.y + 16 ;z++)
+       //reset lightfactor
+       //resetLightFactor();
+
+        // appel au makemeshchunk
+        makeMeshChunk();
+       
+ 
+    }
+    
+    public void resetLightFactor()
+    {
+         for(int gz=(int)_worldPosition.y ; gz < (int)_worldPosition.y + 16 ;gz++)
         {
-            for(int x=(int)_worldPosition.x;x < (int)_worldPosition.x + 16;x++)
+            for(int gx=(int)_worldPosition.x ;gx < (int)_worldPosition.x + 16 ;gx++)
             {
-                for(int y=0;y<256;y++)
+                for(int gy=0;gy<256;gy++)
                 {
-                    _mapLoader.getGridMap3d()[(y * _mapLoader.getzWidth()) + (z * _mapLoader.getHeightMap()) + x] &= 0xff00ffff;
+                     try
+                     {
+                        _mapLoader.getGridMap3d()[(gy * _mapLoader.getzWidth()) + (gz * _mapLoader.getHeightMap()) + gx] &= 0xff00ffff;
+                     }
+                     catch(java.lang.ArrayIndexOutOfBoundsException a){}
                 }
             }
         }
-        
-        for(LightProbe l : _lightProbes)
+    }
+    
+    public void illumination()
+    {
+         for(LightProbe l : _lightProbes)
             l.prepareIllumination(_mapLoader);
-        
-        
-        // appel au makemeshchunk
-        makeMeshChunk();
-        // update lightprobe
-        updateLightProbeColor();
- 
     }
     
     private void makeMeshChunk()
@@ -360,12 +370,7 @@ public class Chunk implements Savable
          // creation du mesh de collision
          _meshChunk.createCollisionData();
     }
-    
-    public void updateLightProbeColor()
-    {
-             
-        
-    }
+       
     
     public void addLightProbe(LightProbe l)
     {

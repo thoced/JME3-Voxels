@@ -46,9 +46,7 @@ public class LightProbe
         int x = (int)_position.x;
         int y = (int)_position.y;
         int z = (int)_position.z;
-        
-        
-        
+
         System.out.println("x : " + x + " y : " + y + " z " + z);
         
         if(x < 0 || y < 0 || z < 0)

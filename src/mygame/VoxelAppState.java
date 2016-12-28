@@ -54,7 +54,7 @@ public class VoxelAppState extends AbstractAppState {
         _map = new MapLoader("Textures/map01/map09.png",app.getAssetManager()); 
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
-        _gridChunk = new Chunk[_map.getWidthMap() * _map.getHeightMap()];
+        _gridChunk = new Chunk[(_map.getWidthMap()/16) * (_map.getHeightMap()/16)];
         this.manageChunk();
                
          
@@ -91,7 +91,7 @@ public class VoxelAppState extends AbstractAppState {
               Chunk c = new Chunk(new Vector2f(x,y),_map);
               //_listChunks.add(c);
               // ajout dans un grid pour pouvoir y accéder plus rapidement
-              _gridChunk[(ly * _map.getHeightMap()) + lx] = c;
+              _gridChunk[(ly * (_map.getHeightMap() / 16)) + lx] = c;
               // ajout dans le scene graph
               // ajout du node
               addNode(c,c.getNameChunk());  
@@ -102,7 +102,7 @@ public class VoxelAppState extends AbstractAppState {
           lx = 0;
           
       }
-      
+       // attache du nodeVoxelChunks dans le rootNode 
        ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunks);
     }
     
@@ -132,15 +132,15 @@ public class VoxelAppState extends AbstractAppState {
         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk
-        if(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x] != null)
+        if(_gridChunk[((int)chunkPos.y * (_map.getHeightMap()) / 16) +  (int)chunkPos.x] != null)
         {
             // update du chunk (remesh)
-            _gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].updateMeshChunk();
+            _gridChunk[((int)chunkPos.y * (_map.getHeightMap()) / 16) +  (int)chunkPos.x].updateMeshChunk();
             //detachement du node
             String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
             _nodeVoxelChunks.detachChildNamed(nameChunkSearch);
             // ajout du nouveau node avec le nouveau mesh
-            this.addNode(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x], nameChunkSearch);
+            this.addNode(_gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x], nameChunkSearch);
 
         }
              
@@ -160,15 +160,15 @@ public class VoxelAppState extends AbstractAppState {
             {
                 try
                 {
-                    if(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx] != null)
+                     if(_gridChunk[((int)chunkPos.y * (_map.getHeightMap()) / 16) +  (int)chunkPos.x] != null)
                     {
                         // update du chunk (remesh) ainsi que les 8 autres chunk 
-                        _gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].updateMeshChunk();
+                        _gridChunk[((int)chunkPos.y * (_map.getHeightMap()) / 16) +  (int)chunkPos.x].updateMeshChunk();
                         //detachement du node
                         String nameChunkSearch = "[" + (int)chunkPos.x + dx + "][" + (int)chunkPos.y + dy + "]";
                         _nodeVoxelChunks.detachChildNamed(nameChunkSearch);
                         // ajout du nouveau node avec le nouveau mesh
-                        this.addNode(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx], nameChunkSearch);
+                        this.addNode(_gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x], nameChunkSearch);
 
                     }
                 }
@@ -182,14 +182,82 @@ public class VoxelAppState extends AbstractAppState {
     
     public void addLightProbe(Vector3f p)
     {
-        
-        LightProbe probe = new LightProbe(p,3f);
-       // probe.prepareIllumination(_map); 
-        
-        Spatial sc = _nodeVoxelChunks.getChild("[0][0]");
-        Chunk cc = sc.getUserData("CHUNK");
+        // calcul du chunk qui va recevoir le lightprobe
+        int x = (int)(p.x / 16);
+        int y = (int)(p.z / 16);
+        // instance d'un nouveau lightprobe
+        LightProbe probe = new LightProbe(p,10f);
+        // reception du node contenu le chunk avec les indices x et y
+        Spatial sc = _nodeVoxelChunks.getChild("[" + x + "][" + y + "]");
+        System.out.println("[" + x + "][" + y + "]");
+        // récupération de l'objet chunk
+        Chunk cc =  _gridChunk[(y * (_map.getHeightMap())/16) + x];
+        // ajout du probe dans le chunk
         cc.addLightProbe(probe);
-        cc.updateMeshChunk();
+        // update du 9 chunks pour la reconstruction du mesh et de l'illumination
+        
+        
+         //reset lightFactor du chunk
+  
+        for(int dy = y - 1; dy <= y + 1;dy++ )
+        {
+            for(int dx = x - 1;dx <= x + 1;dx++)
+            {
+                try
+                {
+                    _gridChunk[(dy * (_map.getHeightMap() / 16)) + dx].resetLightFactor();
+    
+                }
+                  catch(ArrayIndexOutOfBoundsException a)
+                  {
+                      
+                  }
+                
+            }
+        }
+        
+        // illumination
+        
+          for(int dy = y - 1; dy <= y + 1;dy++ )
+        {
+            for(int dx = x - 1;dx <= x + 1;dx++)
+            {
+                try
+                {
+
+                    _gridChunk[(dy * (_map.getHeightMap() / 16)) + dx].illumination();
+             
+                     
+                    
+                }
+                  catch(ArrayIndexOutOfBoundsException a)
+                  {
+                      
+                  }
+                
+            }
+        }
+          
+          // remech
+          
+            for(int dy = y - 1; dy <= y + 1;dy++ )
+        {
+            for(int dx = x - 1;dx <= x + 1;dx++)
+            {
+                try
+                {
+                   
+                _gridChunk[(dy * (_map.getHeightMap() / 16)) + dx].updateMeshChunk();
+                     
+                    
+                }
+                  catch(ArrayIndexOutOfBoundsException a)
+                  {
+                      
+                  }
+                
+            }
+        }
         
                
     }
