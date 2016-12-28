@@ -50,7 +50,7 @@ public class VoxelAppState extends AbstractAppState {
                  
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
-        _gridChunk = new Chunk[_map.getWidthMap() * _map.getHeightMap()];
+        _gridChunk = new Chunk[(_map.getWidthMap() / 16) * (_map.getHeightMap() / 16)];
         this.manageChunk();
                
          
@@ -81,7 +81,7 @@ public class VoxelAppState extends AbstractAppState {
               Chunk c = new Chunk(new Vector2f(x,y),_map);
               //_listChunks.add(c);
               // ajout dans un grid pour pouvoir y accéder plus rapidement
-              _gridChunk[(ly * _map.getHeightMap()) + lx] = c;
+              _gridChunk[(ly * (_map.getHeightMap() / 16)) + lx] = c;
               // ajout dans le scene graph
               // pour chaque chunk, on récupère le mesh
               Mesh m = c.getMeshChunk();
@@ -114,15 +114,15 @@ public class VoxelAppState extends AbstractAppState {
         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk
-        if(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x] != null)
+        if(_gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x] != null)
         {
             // update du chunk (remesh)
-            _gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].updateMeshChunk();
+            _gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x].updateMeshChunk();
             //detachement du node
             String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
             _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
             // ajout du nouveau node avec le nouveau mesh
-            this.addNode(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].getMeshChunk(), nameChunkSearch);
+            this.addNode(_gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x].getMeshChunk(), nameChunkSearch);
 
         }
              
@@ -142,15 +142,15 @@ public class VoxelAppState extends AbstractAppState {
             {
                 try
                 {
-                    if(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx] != null)
+                    if(_gridChunk[((int)(chunkPos.y + dy) * (_map.getHeightMap() / 16)) +  (int)chunkPos.x + dx] != null)
                     {
                         // update du chunk (remesh) ainsi que les 8 autres chunk 
-                        _gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].updateMeshChunk();
+                        _gridChunk[((int)(chunkPos.y + dy) * (_map.getHeightMap() / 16)) +  (int)chunkPos.x + dx].updateMeshChunk();
                         //detachement du node
                         String nameChunkSearch = "[" + (int)chunkPos.x + dx + "][" + (int)chunkPos.y + dy + "]";
                         _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
                         // ajout du nouveau node avec le nouveau mesh
-                        this.addNode(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].getMeshChunk(), nameChunkSearch);
+                        this.addNode(_gridChunk[((int)(chunkPos.y + dy) * (_map.getHeightMap() / 16)) +  (int)chunkPos.x + dx].getMeshChunk(), nameChunkSearch);
 
                     }
                 }
