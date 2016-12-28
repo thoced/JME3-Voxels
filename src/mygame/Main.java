@@ -86,7 +86,7 @@ public class Main extends SimpleApplication implements ActionListener{
        // Light
        AmbientLight ambientLight = new AmbientLight();
       // ambientLight.setColor(new ColorRGBA((1f/255f)*157f,1f,(1f/255f)*242f,1f));
-       ambientLight.setColor(new ColorRGBA(0.5f,0.4f,0.4f,1));
+       ambientLight.setColor(new ColorRGBA(0.1f,0.075f,0.075f,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();
@@ -99,11 +99,12 @@ public class Main extends SimpleApplication implements ActionListener{
          /** Add fog to a scene */
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter();
-        fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
+        fog.setFogColor(new ColorRGBA(0.1f,0.075f,0.075f,1));
+        //fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
+        
         fog.setFogDistance(212);
         fog.setFogDensity(1.2f);
         fpp.addFilter(fog);
-       
         this.viewPort.addProcessor(fpp);
   
        // initKeys

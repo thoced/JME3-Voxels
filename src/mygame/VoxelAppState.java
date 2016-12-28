@@ -19,6 +19,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,7 +37,10 @@ public class VoxelAppState extends AbstractAppState {
     
     private Chunk[] _gridChunk;
     
-    private Node _nodeVoxelChunk;
+    // root node des Voxels Chunk
+    private Node _nodeVoxelChunks;
+    // root node des LightProbes
+    private Node _nodeLightProbes;
     
     private Material _mat;
     
@@ -47,8 +51,7 @@ public class VoxelAppState extends AbstractAppState {
         
         _app = app;
         // chargement de la map
-        _map = new MapLoader("Textures/map01/map09.png",app.getAssetManager());
-                 
+        _map = new MapLoader("Textures/map01/map09.png",app.getAssetManager()); 
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
         _gridChunk = new Chunk[_map.getWidthMap() * _map.getHeightMap()];
@@ -75,8 +78,9 @@ public class VoxelAppState extends AbstractAppState {
         _mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
        
         // creation du nodeVoxelChunk
-        _nodeVoxelChunk = new Node();
-        _nodeVoxelChunk.setName("NODE_VOXEL_CHUNK");
+        _nodeVoxelChunks = new Node();
+        _nodeVoxelChunks.setName("NODE_VOXEL_CHUNK");
+        
         
       int lx=0,ly=0;
       for(int y=0;y<_map.getHeightMap();y+=16)
@@ -99,7 +103,7 @@ public class VoxelAppState extends AbstractAppState {
           
       }
       
-       ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunk);
+       ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunks);
     }
     
     private void addNode(Chunk chunk,String name)
@@ -116,7 +120,7 @@ public class VoxelAppState extends AbstractAppState {
          
 
          // ajout dans le node délégué au Chunk
-         _nodeVoxelChunk.attachChild(geo);
+         _nodeVoxelChunks.attachChild(geo);
     }
     
     public void addVoxelToGrid(Vector3f p)
@@ -132,7 +136,7 @@ public class VoxelAppState extends AbstractAppState {
             _gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x].updateMeshChunk();
             //detachement du node
             String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
-            _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
+            _nodeVoxelChunks.detachChildNamed(nameChunkSearch);
             // ajout du nouveau node avec le nouveau mesh
             this.addNode(_gridChunk[((int)chunkPos.y * _map.getHeightMap()) +  (int)chunkPos.x], nameChunkSearch);
 
@@ -160,7 +164,7 @@ public class VoxelAppState extends AbstractAppState {
                         _gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx].updateMeshChunk();
                         //detachement du node
                         String nameChunkSearch = "[" + (int)chunkPos.x + dx + "][" + (int)chunkPos.y + dy + "]";
-                        _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
+                        _nodeVoxelChunks.detachChildNamed(nameChunkSearch);
                         // ajout du nouveau node avec le nouveau mesh
                         this.addNode(_gridChunk[((int)(chunkPos.y + dy) * _map.getHeightMap()) +  (int)chunkPos.x + dx], nameChunkSearch);
 
@@ -176,13 +180,15 @@ public class VoxelAppState extends AbstractAppState {
     
     public void addLightProbe(Vector3f p)
     {
+        
         LightProbe probe = new LightProbe(p,3f);
         
-        probe.prepareIllumination(_nodeVoxelChunk);
+        probe.prepareIllumination(_nodeVoxelChunks,_app.getAssetManager()); 
+               
     }
 
     public Node getNodeVoxelChunk() {
-        return _nodeVoxelChunk;
+        return _nodeVoxelChunks;
     }
 
     @Override

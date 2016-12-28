@@ -5,14 +5,18 @@
  */
 package mygame;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Sphere;
 
 /**
  *
@@ -33,8 +37,9 @@ public class LightProbe
         this._radius = radius;
     }
 
-    public void prepareIllumination(Node node)
+    public void prepareIllumination(Node node,AssetManager asset)
     {
+        CollisionResults results = new CollisionResults();
         // creation du rayon
         Ray ray = new Ray();
         // creatin du boundingsphere
@@ -66,15 +71,28 @@ public class LightProbe
                             continue;
                         
                         // on lance un rayon entre le pb et la position du lightprobe
-                          
-                        ray.setOrigin(pb[i]);
+                         dir = pb[i].subtract(_position);  
+                         dir.normalizeLocal();
+                         
+                        ray.setOrigin(_position);
                         ray.setDirection(dir);
-                        CollisionResults results = new CollisionResults();
+                        results.clear();
                         node.collideWith(ray, results);
                         
-                        if(results.size() > 0 && !results.getClosestCollision().getContactPoint().equals(pb[i]))
+                        System.out.println("result: " + results.size() );
+                        System.out.println("dir Z:" + dir.y);
+                        //float dist = results.getClosestCollision().getContactPoint().distance(pb[i]);
+                        if(results.size() > 0 && results.getClosestCollision().getContactPoint().distance(pb[i]) > 0.1f )  
                         {
                             // il y a une collision, on applique pas de lumière
+                            Sphere sphere = new Sphere(30, 30, 0.1f);
+                            Geometry geo = new Geometry("COLL", sphere);
+                            Material mark_mat = new Material(asset, "Common/MatDefs/Misc/Unshaded.j3md");
+                            mark_mat.setColor("Color", ColorRGBA.Blue);
+                            geo.setLocalTranslation(results.getClosestCollision().getContactPoint());
+                            geo.setMaterial(mark_mat);
+                            node.getParent().attachChild(geo);
+                           
                         }
                         else
                         {
@@ -82,7 +100,7 @@ public class LightProbe
                             cb[i].addLocal(ColorRGBA.White);
  
                         }
-                        
+                       
                     }
                 }
                 
@@ -90,10 +108,23 @@ public class LightProbe
             }
         }
         
+       
+        
          
         
        
     }
+    
+     public boolean getIsCollision(CollisionResults r,Vector3f p)
+     {
+            for(CollisionResult rs : r)
+            {
+                if(rs.getContactPoint().equals(p))
+                    return true;
+            }
+         
+            return false;
+     }
     
     public Vector3f getPosition() {
         return _position;

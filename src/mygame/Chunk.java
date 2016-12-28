@@ -82,9 +82,12 @@ public class Chunk implements Savable
         _meshChunk.clearBuffer(Type.TexCoord);
         _meshChunk.clearBuffer(Type.Index);
         _meshChunk.clearBuffer(Type.Normal);
+        _meshChunk.clearBuffer(Type.Color);
         
         // appel au makemeshchunk
         makeMeshChunk();
+        // update lightprobe
+        updateLightProbeColor();
  
     }
     
@@ -146,30 +149,32 @@ public class Chunk implements Savable
                            
                            ry = y - 1;
                           
-                           if(ry < 0 ||  _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] == 0)
-                           {
-                                // down
-                                vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(-.5f,-.5f,+.5f).add(addRelative));
-                                vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
-                                vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
-                                // TextCoord
-                                vText.add(new Vector2f(0,0)); 
-                                vText.add(new Vector2f(1f,0));
-                                vText.add(new Vector2f(1f,1f));
-                                vText.add(new Vector2f(0,1f));
-                                 // Normal
-                                vNorm.add(new Vector3f(0,-1,0));
-                                vNorm.add(new Vector3f(0,-1,0));
-                                vNorm.add(new Vector3f(0,-1,0));
-                                vNorm.add(new Vector3f(0,-1,0));
-                                 // Color
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                               
-                           }
+                          
+                            if(ry < 0 ||  _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] == 0)
+                            {
+                                 // down
+                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(-.5f,-.5f,+.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
+                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
+                                 // TextCoord
+                                 vText.add(new Vector2f(0,0)); 
+                                 vText.add(new Vector2f(1f,0));
+                                 vText.add(new Vector2f(1f,1f));
+                                 vText.add(new Vector2f(0,1f));
+                                  // Normal
+                                 vNorm.add(new Vector3f(0,-1,0));
+                                 vNorm.add(new Vector3f(0,-1,0));
+                                 vNorm.add(new Vector3f(0,-1,0));
+                                 vNorm.add(new Vector3f(0,-1,0));
+                                  // Color
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+
+                            }
+                           
                           
                            
                            rx = x + 1;
@@ -337,7 +342,7 @@ public class Chunk implements Savable
         _meshChunk.clearBuffer(Type.Color);
         
         _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(_cb));
-       // _cb = cb;
+       
         
     }
             
