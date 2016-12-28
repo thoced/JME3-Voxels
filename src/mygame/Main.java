@@ -232,7 +232,7 @@ public class Main extends SimpleApplication implements ActionListener{
                         Vector3f p =  closest.getContactPoint().add(closest.getContactNormal().divide(2f));
                       
                          //Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2f));
-                         _voxelAppState.addLightProbe(p);
+                         _voxelAppState.addLightProbe(p.add(_offsetVoxel));
                     }
                         
                 }

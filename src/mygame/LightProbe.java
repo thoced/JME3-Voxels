@@ -36,78 +36,126 @@ public class LightProbe
         this._position = position;
         this._positionNormalized = this._position.normalize();
         this._radius = radius;
+        
+        
     }
 
-    public void prepareIllumination(Node node,AssetManager asset)
+    public void prepareIllumination(MapLoader map)
     {
-        CollisionResults results = new CollisionResults();
-        // creation du rayon
-        Ray ray = new Ray();
-        // creatin du boundingsphere
-        BoundingBox bSphere = new BoundingBox(_position,_radius,_radius,_radius);
-        //pour chaque node enfants
-        for(Spatial s : node.getChildren())
+        // calcul de la position dans le grid3d
+        int x = (int)_position.x;
+        int y = (int)_position.y;
+        int z = (int)_position.z;
+        
+        
+        
+        System.out.println("x : " + x + " y : " + y + " z " + z);
+        
+        if(x < 0 || y < 0 || z < 0)
+            return;
+        
+        // up
+        for(int p=y;p<y+_radius;p++)
         {
-            // si le node est intersect avec la boundingsphere
-            if(s.getWorldBound().intersectsBoundingBox(bSphere))
+            if(p<0)
+                break;
+            
+            // si le voxel est vide
+            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
             {
-                //récupération des position vertex
-                Chunk c = s.getUserData("CHUNK");
-                Vector3f[] pb = c.getPositionBuffer();
-                Vector3f[] nb = c.getNormalBuffer();
-                ColorRGBA[] cb = c.getColorBuffer();
+               // on modifie le lightfactor
+                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x00010000;
                 
-                // pour chaque vertex position dans le boundingsphere
-                for(int i=0;i<pb.length;i++)
-                {
-                    // si il est contenu dans le boundingSphere
-                    if(bSphere.contains(pb[i]))
-                    {
-                       // Vector3f dir = pb[i].subtract(_position);
-                        Vector3f dir =_position.subtract(pb[i]);
-                        dir.normalizeLocal();
-                        // test dot product 
-                        float dot = nb[i].dot(dir);
-                        if(dot <= 0f || dot >=1f)
-                            continue;
-                        
-                        // on lance un rayon entre le pb et la position du lightprobe
-                         dir = pb[i].subtract(_position);  
-                         dir.normalizeLocal();
-                         
-                        ray.setOrigin(_position);
-                        ray.setDirection(dir);
-                        results.clear();
-                        node.collideWith(ray, results);
-                        
-                        System.out.println("result: " + results.size() );
-                        System.out.println("dir Z:" + dir.y);
-                        //float dist = results.getClosestCollision().getContactPoint().distance(pb[i]);
-                        if(results.size() > 0 && results.getClosestCollision().getContactPoint().distance(pb[i]) > 0.1f )  
-                        {
-                            // il y a une collision, on applique pas de lumière
-                            Sphere sphere = new Sphere(30, 30, 0.1f);
-                            Geometry geo = new Geometry("COLL", sphere);
-                            Material mark_mat = new Material(asset, "Common/MatDefs/Misc/Unshaded.j3md");
-                            mark_mat.setColor("Color", ColorRGBA.Blue);
-                            geo.setLocalTranslation(results.getClosestCollision().getContactPoint());
-                            geo.setMaterial(mark_mat);
-                            node.getParent().attachChild(geo);
-                           
-                        }
-                        else
-                        {
-                            // il n'y a pas de collision, on applique de la lumière
-                            cb[i].addLocal(ColorRGBA.White);
- 
-                        }
-                       
-                    }
-                }
-                
-                c.updateLightProbeColor();
             }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
         }
+        
+        // down
+        for(int p=y;p>y-_radius;p--)
+        {
+             if(p<0)
+                break;
+            
+            // si le voxel est vide
+            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            {
+               // on modifie le lightfactor
+                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x00010000;
+                
+            }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
+        }
+        
+         // right
+        for(int p=x;p < x + _radius;p++)
+        {
+             if(p<0)
+                break;
+            
+            // si le voxel est vide
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff000000) == 0x00000000)
+            {
+               // on modifie le lightfactor
+                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x00010000;
+                
+            }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
+        }
+        
+         // left
+        for(int p=x;p > x - _radius;p--)
+        {
+             if(p<0)
+                break;
+             
+            // si le voxel est vide
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff000000) == 0x00000000)
+            {
+               // on modifie le lightfactor
+                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x00010000;
+                
+            }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
+        }
+        
+         // front
+        for(int p=z;p < z + _radius;p++)
+        {
+             if(p<0)
+                break;
+            
+            // si le voxel est vide
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            {
+               // on modifie le lightfactor
+                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x00010000;
+                
+            }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
+        }
+        
+         // back
+        for(int p=z;p > z - _radius;p--)
+        {
+             if(p<0)
+                break;
+            
+            // si le voxel est vide
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            {
+               // on modifie le lightfactor
+                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x00010000;
+                
+            }
+            else
+               break; // le voxel est remplis, on arrete la projection de lumière
+        }
+              
         
        
     }

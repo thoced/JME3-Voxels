@@ -123,10 +123,7 @@ public class VoxelAppState extends AbstractAppState {
          _nodeVoxelChunks.attachChild(geo);
     }
     
-    private void refreshIllumination()
-    {
-        
-    }
+   
     
     public void addVoxelToGrid(Vector3f p)
     {
@@ -187,8 +184,13 @@ public class VoxelAppState extends AbstractAppState {
     {
         
         LightProbe probe = new LightProbe(p,3f);
+       // probe.prepareIllumination(_map); 
         
-        probe.prepareIllumination(_nodeVoxelChunks,_app.getAssetManager()); 
+        Spatial sc = _nodeVoxelChunks.getChild("[0][0]");
+        Chunk cc = sc.getUserData("CHUNK");
+        cc.addLightProbe(probe);
+        cc.updateMeshChunk();
+        
                
     }
 

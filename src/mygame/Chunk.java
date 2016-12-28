@@ -37,6 +37,9 @@ public class Chunk implements Savable
     private Vector2f _worldPosition;
     
     private MapLoader _mapLoader;
+    
+    // liste des lightprobes associés au chunk
+    private Collection<LightProbe> _lightProbes;
    
     private int _height;
     
@@ -62,6 +65,9 @@ public class Chunk implements Savable
         _worldPosition = worldPosition;
         _mapLoader = mapLoader;
         _nameChunk = "[" + (int)_worldPosition.x + "][" + (int)_worldPosition.y + "]"; 
+        
+        // instance de la liste des lightprobes
+        _lightProbes = new ArrayList<LightProbe>();
         // instance du listVoxels
         //_listVoxels = new ArrayList<Voxel>();
        //_gridChunk = new short[65536];
@@ -83,6 +89,22 @@ public class Chunk implements Savable
         _meshChunk.clearBuffer(Type.Index);
         _meshChunk.clearBuffer(Type.Normal);
         _meshChunk.clearBuffer(Type.Color);
+        
+        //reset lightFactor dans le chunk
+         for(int z=(int)_worldPosition.y; z < (int)_worldPosition.y + 16 ;z++)
+        {
+            for(int x=(int)_worldPosition.x;x < (int)_worldPosition.x + 16;x++)
+            {
+                for(int y=0;y<256;y++)
+                {
+                    _mapLoader.getGridMap3d()[(y * _mapLoader.getzWidth()) + (z * _mapLoader.getHeightMap()) + x] &= 0xff00ffff;
+                }
+            }
+        }
+        
+        for(LightProbe l : _lightProbes)
+            l.prepareIllumination(_mapLoader);
+        
         
         // appel au makemeshchunk
         makeMeshChunk();
@@ -135,14 +157,16 @@ public class Chunk implements Savable
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
-                                 // Color
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
                                  
-
-                                
+                                 int lightFactor = _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff0000;
+                                 lightFactor = lightFactor >> 16;
+                                 
+                                 //System.out.println("lightFactor: " + lightFactor);
+                                 // Color
+                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
                                  
                             }
                           
@@ -339,11 +363,13 @@ public class Chunk implements Savable
     
     public void updateLightProbeColor()
     {
-        _meshChunk.clearBuffer(Type.Color);
+             
         
-        _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(_cb));
-       
-        
+    }
+    
+    public void addLightProbe(LightProbe l)
+    {
+      _lightProbes.add(l);
     }
             
 
