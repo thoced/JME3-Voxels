@@ -202,10 +202,10 @@ public class Chunk
                                 vText.add(new Vector2f(1f,1f));
                                 vText.add(new Vector2f(0,1f));
                                  // Normal
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
                                 
                            }
                           
@@ -225,10 +225,10 @@ public class Chunk
                                 vText.add(new Vector2f(1f,1f));
                                 vText.add(new Vector2f(0,1f));
                                  // Normal
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
                                 
                            }
                            
