@@ -109,22 +109,8 @@ public class LightProbe
         }
         
        
-        
-         
-        
-       
     }
-    
-     public boolean getIsCollision(CollisionResults r,Vector3f p)
-     {
-            for(CollisionResult rs : r)
-            {
-                if(rs.getContactPoint().equals(p))
-                    return true;
-            }
-         
-            return false;
-     }
+     
     
     public Vector3f getPosition() {
         return _position;

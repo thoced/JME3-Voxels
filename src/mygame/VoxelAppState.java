@@ -123,6 +123,11 @@ public class VoxelAppState extends AbstractAppState {
          _nodeVoxelChunks.attachChild(geo);
     }
     
+    private void refreshIllumination()
+    {
+        
+    }
+    
     public void addVoxelToGrid(Vector3f p)
     {
         // ajout du voxel dans la grid3d generale
