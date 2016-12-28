@@ -239,10 +239,10 @@ public class Chunk implements Savable
                                 vText.add(new Vector2f(1f,1f));
                                 vText.add(new Vector2f(0,1f));
                                  // Normal
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
-                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,-1));
                                  // Color
                                 vColor.add(new ColorRGBA(1,1,1,1));
                                 vColor.add(new ColorRGBA(1,1,1,1));
@@ -267,10 +267,10 @@ public class Chunk implements Savable
                                 vText.add(new Vector2f(1f,1f));
                                 vText.add(new Vector2f(0,1f));
                                  // Normal
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
-                                vNorm.add(new Vector3f(0,0,-1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
+                                vNorm.add(new Vector3f(0,0,1));
                                  // Color
                                 vColor.add(new ColorRGBA(1,1,1,1));
                                 vColor.add(new ColorRGBA(1,1,1,1));
@@ -326,11 +326,13 @@ public class Chunk implements Savable
          _meshChunk.createCollisionData();
     }
     
-    public void updateLightProbeColor()
+    public void updateLightProbeColor(ColorRGBA[] cb)
     {
         _meshChunk.clearBuffer(Type.Color);
         
-        _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(_cb));
+        _meshChunk.setBuffer(Type.Color, 4, BufferUtils.createFloatBuffer(cb));
+        _cb = cb;
+        
     }
             
 
