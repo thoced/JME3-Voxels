@@ -229,8 +229,10 @@ public class Main extends SimpleApplication implements ActionListener{
                     
                     if(name.equals("ADD_LIGHTPROBE"))
                     {
-                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2f));
-                         _voxelAppState.addLightProbe(voxelPos);
+                        Vector3f p =  closest.getContactPoint().add(closest.getContactNormal().divide(2f));
+                      
+                         //Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2f));
+                         _voxelAppState.addLightProbe(p);
                     }
                         
                 }

@@ -6,6 +6,7 @@
 package mygame;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -43,12 +44,12 @@ public class LightProbe
         // creation du rayon
         Ray ray = new Ray();
         // creatin du boundingsphere
-        BoundingSphere bSphere = new BoundingSphere(_radius,_position);
+        BoundingBox bSphere = new BoundingBox(_position,_radius,_radius,_radius);
         //pour chaque node enfants
         for(Spatial s : node.getChildren())
         {
             // si le node est intersect avec la boundingsphere
-            if(s.getWorldBound().intersectsSphere(bSphere))
+            if(s.getWorldBound().intersectsBoundingBox(bSphere))
             {
                 //récupération des position vertex
                 Chunk c = s.getUserData("CHUNK");
