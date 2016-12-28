@@ -165,7 +165,7 @@ public class VoxelAppState extends AbstractAppState {
     
     public void addLightProbe(Vector3f p)
     {
-        LightProbe probe = new LightProbe(p,10);
+        LightProbe probe = new LightProbe(p,3f);
         
         probe.prepareIllumination(_nodeVoxelChunk);
     }

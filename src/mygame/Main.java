@@ -185,7 +185,7 @@ public class Main extends SimpleApplication implements ActionListener{
                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
                         _voxelAppState.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                     }
-                    else
+                    else if(name.equals("SUB_VOXEL"))
                     {
                         // position du voxel a supprimer
                           Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
@@ -194,8 +194,8 @@ public class Main extends SimpleApplication implements ActionListener{
                     
                     if(name.equals("ADD_LIGHTPROBE"))
                     {
-                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
-                         _voxelAppState.addLightProbe(voxelPos.add(_offsetVoxel));
+                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2f));
+                         _voxelAppState.addLightProbe(voxelPos);
                     }
                         
                 }
