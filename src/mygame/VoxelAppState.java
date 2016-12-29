@@ -66,14 +66,16 @@ public class VoxelAppState extends AbstractAppState {
         _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
 
         _mat.setBoolean("UseVertexColor",true);
-        _mat.setColor("Diffuse", new ColorRGBA(0.2f,0.2f,0.2f,1));
+        _mat.setColor("Diffuse", new ColorRGBA(0.5f,0.5f,0.5f,1));
+        _mat.setColor("Ambient", new ColorRGBA(0.5f,0.5f,0.5f,1));
+        //_mat.setColor("Specular", new ColorRGBA(0.5f,0.5f,0.5f,1));
         
         _mat.setTexture("DiffuseMap",
         _app.getAssetManager().loadTexture("Textures/Textures/rock.jpg"));
-        _mat.setTexture("NormalMap", 
-                _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
-        _mat.setBoolean("UseMaterialColors", false);
-        _mat.setBoolean("VertexLighting", true);
+       // _mat.setTexture("NormalMap", 
+         //       _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
+        _mat.setBoolean("UseMaterialColors", true);
+       // _mat.setBoolean("VertexLighting", true);
         _mat.setFloat("Shininess", 64f);  // [0,128]
         _mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
        
@@ -128,7 +130,7 @@ public class VoxelAppState extends AbstractAppState {
     public void addVoxelToGrid(Vector3f p)
     {
         // ajout du voxel dans la grid3d generale
-        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] |= 0x01000000;
+        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] |= 0x0100;
         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk
@@ -152,7 +154,7 @@ public class VoxelAppState extends AbstractAppState {
     public void subVoxelToGrid(Vector3f p)
     {
         // suppresion du voxel dans la grid3d generale
-        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] &= 0x00ffffff;
+        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] &= 0x00ff;
          // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk ainsi que les 8 autres chunk

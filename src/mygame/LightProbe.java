@@ -52,17 +52,19 @@ public class LightProbe
         if(x < 0 || y < 0 || z < 0)
             return;
         
-        // up
+       
+        
+       /// up
         for(int p=y;p<y+_radius;p++)
         {
-            if(p<0)
+            if(p<0 || p > map.getHeightMap() - 1)
                 break;
             
             // si le voxel est vide
-            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x00010000;
+                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x0002;
                 
             }
             else
@@ -72,14 +74,14 @@ public class LightProbe
         // down
         for(int p=y;p>y-_radius;p--)
         {
-             if(p<0)
+              if(p<0 || p > map.getHeightMap() - 1)
                 break;
             
             // si le voxel est vide
-            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x00010000;
+                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x0002;
                 
             }
             else
@@ -93,10 +95,10 @@ public class LightProbe
                 break;
             
             // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x00010000;
+                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x0002;
                 
             }
             else
@@ -110,10 +112,10 @@ public class LightProbe
                 break;
              
             // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x00010000;
+                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x0002;
                 
             }
             else
@@ -127,10 +129,10 @@ public class LightProbe
                 break;
             
             // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x00010000;
+                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x0002;
                 
             }
             else
@@ -144,10 +146,10 @@ public class LightProbe
                 break;
             
             // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff000000) == 0x00000000)
+            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff00) == 0x0000)
             {
                // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x00010000;
+                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x0002;
                 
             }
             else

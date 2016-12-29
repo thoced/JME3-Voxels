@@ -86,7 +86,7 @@ public class Main extends SimpleApplication implements ActionListener{
        // Light
        AmbientLight ambientLight = new AmbientLight();
       // ambientLight.setColor(new ColorRGBA((1f/255f)*157f,1f,(1f/255f)*242f,1f));
-       ambientLight.setColor(new ColorRGBA(0.1f,0.075f,0.075f,1));
+       ambientLight.setColor(new ColorRGBA(1,1,1,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();

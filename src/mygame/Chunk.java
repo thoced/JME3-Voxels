@@ -109,7 +109,7 @@ public class Chunk implements Savable
                 {
                      try
                      {
-                        _mapLoader.getGridMap3d()[(gy * _mapLoader.getzWidth()) + (gz * _mapLoader.getHeightMap()) + gx] &= 0xff00ffff;
+                        _mapLoader.getGridMap3d()[(gy * _mapLoader.getzWidth()) + (gz * _mapLoader.getHeightMap()) + gx] &= 0xff01; // lightfactore à 1 
                      }
                      catch(java.lang.ArrayIndexOutOfBoundsException a){}
                 }
@@ -144,13 +144,14 @@ public class Chunk implements Savable
             {
                 for(int y=0;y<256;y++)
                 {
-                    if((_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x] & 0xff000000) != 0) // si le type n'est pas egale à 0
+                    if((_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x] & 0xff00) != 0) // si le type n'est pas egale à 0
                     {
                            addRelative.set(x, y, z);
+                           // initialisation des r
                            int rx = x,ry = y,rz = z;
                            
                             ry = y + 1;
-                            if(ry > 255 || (_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0xff000000) == 0)
+                            if(ry > 255 || (_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0xff00) == 0)
                             {
                                  // top
                                  vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -167,24 +168,33 @@ public class Chunk implements Savable
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
+                                 try
+                                 {
+                                     // récupération du lightfactor du voxel vide
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff);
+
+                                    // Color avec application du lightfactor
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 }
+                                 catch(ArrayIndexOutOfBoundsException a)
+                                 {
+                                     // color sans application du lightfactor (si on est au bout de la carte)
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                 }
                                  
-                                 int lightFactor = _mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff0000;
-                                 lightFactor = lightFactor >> 16;
-                                 
-                                 //System.out.println("lightFactor: " + lightFactor);
-                                 // Color
-                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                 vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
                                  
                             }
                           
                            
                            ry = y - 1;
                           
-                          
-                            if(ry < 0 ||  (_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0xff000000) == 0)
+                            if(ry < 0 ||  (_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0xff00) == 0)
                             {
                                  // down
                                  vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
@@ -201,11 +211,26 @@ public class Chunk implements Savable
                                  vNorm.add(new Vector3f(0,-1,0));
                                  vNorm.add(new Vector3f(0,-1,0));
                                  vNorm.add(new Vector3f(0,-1,0));
-                                  // Color
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 
+                               try
+                                 {
+                                     // récupération du lightfactor du voxel vide
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff);
+
+                                    // Color avec application du lightfactor
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 }
+                                 catch(ArrayIndexOutOfBoundsException a)
+                                 {
+                                     // color sans application du lightfactor (si on est au bout de la carte)
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                 }
 
                             }
                            
@@ -213,7 +238,7 @@ public class Chunk implements Savable
                            
                            rx = x + 1;
                            
-                            if(rx > width-1 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0xff000000) == 0)
+                            if(rx > width-1 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0xff00) == 0)
                             {
                                  // right
                                  vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
@@ -230,18 +255,33 @@ public class Chunk implements Savable
                                  vNorm.add(new Vector3f(1,0,0));
                                  vNorm.add(new Vector3f(1,0,0));
                                  vNorm.add(new Vector3f(1,0,0));
-                                  // Color
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
-                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 
+                                  try
+                                 {
+                                     // récupération du lightfactor du voxel vide
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff);
+
+                                    // Color avec application du lightfactor
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                 }
+                                 catch(ArrayIndexOutOfBoundsException a)
+                                 {
+                                     // color sans application du lightfactor (si on est au bout de la carte)
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                 }
 
                             }
                            
                            
                            rx = x - 1;
                            
-                            if(rx < 0 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0xff000000) == 0)
+                            if(rx < 0 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0xff00) == 0)
                             {
                                 // left
                                 vBuff.add(new Vector3f(-.5f,+.5f,+.5f).add(addRelative));
@@ -258,11 +298,16 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(-1,0,0));
                                 vNorm.add(new Vector3f(-1,0,0));
                                 vNorm.add(new Vector3f(-1,0,0));
-                                // Color
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
+                                
+                               
+                                 
+                                 //System.out.println("lightFactor: " + lightFactor);
+                                 // Color
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                
                                 
                                 
                             }
@@ -270,7 +315,7 @@ public class Chunk implements Savable
                            
                            rz = z - 1;
                            
-                           if(rz < 0 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0xff000000) == 0)
+                           if(rz < 0 || (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0xff00) == 0)
                            {
                                 // front
                                 vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
@@ -287,18 +332,18 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(0,0,-1));
                                 vNorm.add(new Vector3f(0,0,-1));
                                 vNorm.add(new Vector3f(0,0,-1));
-                                 // Color
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
+                                
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
                                 
                            }
                           
                            
                            rz = z + 1;
                           
-                           if(rz > height-1|| (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0xff000000) == 0)
+                           if(rz > height-1|| (_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0xff00) == 0)
                            {
                                 // back
                                 vBuff.add(new Vector3f(+.5f,+.5f,+.5f).add(addRelative));
@@ -315,11 +360,11 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(0,0,1));
                                 vNorm.add(new Vector3f(0,0,1));
                                 vNorm.add(new Vector3f(0,0,1));
-                                 // Color
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
-                                vColor.add(new ColorRGBA(1,1,1,1));
+                                
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
+                                 vColor.add(new ColorRGBA(1,1,1,1));
                                 
                            }
                            
