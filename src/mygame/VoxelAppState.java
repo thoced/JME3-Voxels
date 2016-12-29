@@ -189,11 +189,9 @@ public class VoxelAppState extends AbstractAppState {
     {
               //reset lightFactor du chunk
         
-        
-  
-        for(int dy = y - 2; dy <= y + 2;dy++ )
+        for(int dy = y - 1; dy <= y + 1;dy++ )
         {
-            for(int dx = x - 2;dx <= x + 2;dx++)
+            for(int dx = x - 1;dx <= x + 1;dx++)
             {
                 try
                 {
@@ -208,7 +206,7 @@ public class VoxelAppState extends AbstractAppState {
             }
         }
         
-        // illumination
+        // illumination (calcul de l'illumination sur 5 case adjacentes)
         
           for(int dy = y - 2; dy <= y + 2;dy++ )
         {
@@ -230,9 +228,9 @@ public class VoxelAppState extends AbstractAppState {
           
           // remech
           
-            for(int dy = y - 2; dy <= y + 2;dy++ )
+            for(int dy = y - 1; dy <= y + 1;dy++ )
         {
-            for(int dx = x - 2; dx <= x + 2;dx++)
+            for(int dx = x - 1; dx <= x + 1;dx++)
             {
                 try
                 {
@@ -256,7 +254,7 @@ public class VoxelAppState extends AbstractAppState {
         int x = (int)(p.x / 16);
         int y = (int)(p.z / 16);
         // instance d'un nouveau lightprobe
-        LightProbe probe = new LightProbe(p,7f);
+        LightProbe probe = new LightProbe(p,5f);
         // reception du node contenu le chunk avec les indices x et y
         Spatial sc = _nodeVoxelChunks.getChild("[" + x + "][" + y + "]");
         System.out.println("[" + x + "][" + y + "]");
