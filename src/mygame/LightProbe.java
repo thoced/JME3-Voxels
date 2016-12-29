@@ -67,7 +67,7 @@ public class LightProbe
                         dir.normalizeLocal();
                         // test dot product 
                         float dot = nb[i].dot(dir);
-                        if(dot <= 0f || dot >=1f)
+                        if(dot < 0f || dot >1f)
                             continue;
                         
                         // on lance un rayon entre le pb et la position du lightprobe
