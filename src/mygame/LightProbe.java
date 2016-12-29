@@ -18,6 +18,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -27,137 +29,103 @@ public class LightProbe
 {
     private Vector3f _position;
     
+    private Vector3f _positionScaled;
+    
     private Vector3f _positionNormalized;
     
     private float    _radius = 2f;
+    
+    private Collection<Vector3f> _listVoxels;
 
     public LightProbe(Vector3f position,float radius) 
     {
         this._position = position;
         this._positionNormalized = this._position.normalize();
         this._radius = radius;
+        _listVoxels = new ArrayList<Vector3f>();
+        
+        
+        // calcul de la position dans le grid3d
+        int x = (int)_position.x;
+        int y = (int)_position.y;
+        int z = (int)_position.z;
+        
+        // position lightprobe scaled
+        _positionScaled = new Vector3f(x,y,z);
         
         
     }
 
     public void prepareIllumination(MapLoader map)
     {
+        // mise à zero de la liste
+        _listVoxels.clear();
+        
         // calcul de la position dans le grid3d
-        int x = (int)_position.x;
-        int y = (int)_position.y;
-        int z = (int)_position.z;
-
+        int x = (int)_positionScaled.x;
+        int y = (int)_positionScaled.y;
+        int z = (int)_positionScaled.z;
+        
         System.out.println("x : " + x + " y : " + y + " z " + z);
         
         if(x < 0 || y < 0 || z < 0)
             return;
         
        
-        
-       /// up
-        for(int p=y;p<y+_radius;p++)
-        {
-            if(p<0 || p > map.getHeightMap() - 1)
-                break;
-            
-            // si le voxel est vide
-            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-        
-        // down
-        for(int p=y;p>y-_radius;p--)
-        {
-              if(p<0 || p > map.getHeightMap() - 1)
-                break;
-            
-            // si le voxel est vide
-            if((map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(p * map.getzWidth()) + (z * map.getHeightMap()) + x] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-        
-         // right
-        for(int p=x;p < x + _radius;p++)
-        {
-             if(p<0)
-                break;
-            
-            // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-        
-         // left
-        for(int p=x;p > x - _radius;p--)
-        {
-             if(p<0)
-                break;
-             
-            // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (z * map.getHeightMap()) + p] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-        
-         // front
-        for(int p=z;p < z + _radius;p++)
-        {
-             if(p<0)
-                break;
-            
-            // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-        
-         // back
-        for(int p=z;p > z - _radius;p--)
-        {
-             if(p<0)
-                break;
-            
-            // si le voxel est vide
-            if((map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] & 0xff00) == 0x0000)
-            {
-               // on modifie le lightfactor
-                map.getGridMap3d()[(y * map.getzWidth()) + (p * map.getHeightMap()) + x] |= 0x0002;
-                
-            }
-            else
-               break; // le voxel est remplis, on arrete la projection de lumière
-        }
-              
+      for(int pz = z - (int)_radius; pz < z + (int)_radius; pz ++)
+      {
+          for(int px = x - (int)_radius; px < x + (int)_radius; px ++)
+          {
+               for(int py = y - (int)_radius; py < y + (int)_radius; py ++)
+               {
+                   // on place dans une liste les voxel plein pour la creation des ombres
+                    if((map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] & 0xff00) != 0x0000)
+                        _listVoxels.add(new Vector3f((int)px,(int)py,(int)pz));
+                    else
+                    {
+                        // si c'est un voxel vide, on passe a l'éclairage
+                        try
+                        {
+                          map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] |= computeLightFactor(x,y,z,px,py,pz);
+                        }
+                        catch(ArrayIndexOutOfBoundsException a)
+                        {
+
+                        }
+                    }
+                   
+               }
+          }
+      }
+      
+      // calcul des ombres, pour chaque voxels, on calcul le vecteur directeur
+      for(Vector3f v : _listVoxels)
+      {
+          // calcul du vecteur direction normalize
+         float dist = v.distance(_positionScaled);
+         Vector3f dir = (v.subtract(_positionScaled)).normalize();
+         // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
+         projectShadow(v,dir,(int)3,map);
+         
+      }
         
        
+    }
+    
+    public void projectShadow(Vector3f posVoxel,Vector3f dir, int nbIteration,MapLoader map)
+    {
+        for(int i=0;i<nbIteration;i++)
+        {
+            Vector3f p = posVoxel.add(dir.mult(i));
+            // on ombre
+            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] |= 0x0001;
+        }
+    }
+    
+    
+    public short computeLightFactor(int x, int y, int z, int px,int py,int pz)
+    {
+        return 0x0002;
     }
      
     
