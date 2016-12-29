@@ -374,7 +374,7 @@ public class Chunk implements Savable
     
     public void addLightProbe(LightProbe l)
     {
-      _lightProbes.add(l);
+        _lightProbes.add(l);
     }
             
 
