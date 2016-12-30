@@ -78,93 +78,64 @@ public class LightProbe
         if(x < 0 || y < 0 || z < 0)
             return;
         
+        // clear du list voxels
+        _listVoxels.clear();
        
-      for(int pz = z - (int)_radius; pz <= z + (int)_radius; pz ++)
-      {
-          for(int px = x - (int)_radius; px <= x + (int)_radius; px ++)
-          {
-             
-               for(int py = y - (int)_radius; py <= y + (int)_radius; py ++)
-               {
-                   // on place dans une liste les voxel plein pour la creation des ombres
-                    if(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] != 0x00)
-                        _listVoxels.add(new Vector3f((int)px,(int)py,(int)pz));
-                  
-                        // si c'est un voxel vide, on passe a l'éclairage
-                        try
-                        {
-                          map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] = 
-                                  computeLightFactor(map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px],x,y,z,px,py,pz);
-                        }
-                        catch(ArrayIndexOutOfBoundsException a)
-                        {
-
-                        }
-                   
-                       
-               }
-          }
-      }
-      
-     
-      
-      // calcul des ombres, pour chaque voxels, on calcul le vecteur directeur
-      for(Vector3f v : _listVoxels)
-      {
-          // calcul du vecteur direction normalize
-      
-         // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
-         projectShadow(v,map);
-         
-      }
+         projectShadow(x,y,z,map);
+       
         
        
     }
     
    
     
-    public void projectShadow(Vector3f p,MapLoader map)
+    public void projectShadow(int x,int y, int z,MapLoader map)
     {
-        // pour chaque voxel, on regarde autour et tout ce qui est inférieur à sa valeur de lightfactor est diminué de 1
-        // et ensuite appel récursif en positionne le posVoxel à la position du node vérifié
-        
-         byte lightFactorVoxel = map.getGridLightFactor()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x];
-        
-        for(int z=(int)p.z-1 ; z <= (int)p.z + 1;z++)
+        // si le voxel current a déja été testé, on quitte
+        for(Vector3f v : _listVoxels)
         {
-            for(int x=(int)p.x-1 ; x <= (int)p.x + 1;x++)
-            {
-                for(int y=(int)p.y-1 ; y <= (int)p.y + 1;y++)
-                {
-                    if(x == (int)p.x && y == (int)p.y && z == (int)p.z)
-                    {
-                        
-                    }
-                    else
-                    {
-                 
-                   
-                        byte lightFactor =  map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x];
-                        if(lightFactor <= lightFactorVoxel)
-                        {
-                            lightFactor -= lightFactorVoxel;
-                            if(lightFactor < 0x01)
-                                lightFactor = 0x01;
-
-                           map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x] = lightFactor;
-
-                           // appel récursif
-                          Vector3f np = new Vector3f(x,y,z);
-                          projectShadow(np,map);
-
-                        }
-                    }
-                    
-                }
-            }
-            
+            if(v.x == x && v.y == y && v.z == z)
+                return;
         }
+        // ajout du voxel current dans la liste voxel pour éviter un futur test inutile
+        _listVoxels.add(new Vector3f(x,y,z));
         
+        int py = y;
+        for(int pz = z -1 ; pz <= z + 1 ; pz ++)
+        {
+            for(int px = x -1 ; px <= x + 1 ; px ++)
+            {
+                if(px == x && py == y && pz == z)
+                    continue;
+                
+                // si on est sur un voxel plein
+                if(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] != 0x00)
+                {
+                    // 
+                    continue;
+                }
+                
+                // on est pas sur un voxel plein, on calcul le coefficient lightfactor
+                Vector3f posCurrent = new Vector3f(px,py,pz);
+                byte distance = (byte)Math.ceil(posCurrent.distance(_positionScaled));
+                
+               // System.out.println("distance: " + distance);
+                
+                if(distance < _radius )
+                {
+                
+                    byte lightFactor = ((byte)(_radius - distance)); 
+                    // on place le lightfactor dans le current
+                    map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] = lightFactor;
+
+                    // appel recursif
+                    
+                    projectShadow(px,py,pz,map);
+                }
+                
+            }
+
+        }
         
     }
     
