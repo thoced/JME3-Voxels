@@ -81,15 +81,74 @@ public class LightProbe
         // clear du list voxels
         _listVoxels.clear();
        
-         projectShadow(x,y,z,map);
+         projectLight(x,y,z,map);
        
         
        
     }
+    public void projectShadow(MapLoader map, int px,int py,int pz)
+    {
+         // on parse les cases adjacentes et on calcul le dot product entre le vecteur dir (lumière - case et
+                    // le vecteur dir (case - obstacle)
+                    // si le dot product == 1 alors il y a de l'ombre
+                    // ensuite on place le node dans le listvoxels
+                    
+        for(Vector3f v : _listVoxels)
+        {
+            if(v.x == px && v.y == py && v.z == pz)
+                return;
+        }
+        // ajout du voxel current dans la liste voxel pour éviter un futur test inutile
+        _listVoxels.add(new Vector3f(px,py,pz));
+        
+                    
+                     System.out.println("LUMIERE: " + _positionScaled.x + " y : " + _positionScaled.z); 
+                     System.out.println("BLOC: " + px + " y : " + pz);
+                     
+                    // calcul de la distance voxel to light
+                    float distVoxelLight = _positionScaled.distance(new Vector3f(px,py,pz));
+                     
+                    int by = py;
+                     for(int bz = pz -1 ; bz <= pz + 1 ; bz ++)
+                          {
+                            for(int bx = px -1 ; bx <= px + 1 ; bx ++)
+                             {
+                                 if(bx == px && by == py && bz == pz)
+                                     continue;
+                                 // calcul de la disance current to light
+                                 float distCurrentLight =  _positionScaled.distance(new Vector3f(bx,by,bz));
+                                 // pour chaque case, on calcul le vecteur dir entre la lumière et la case
+                                 Vector3f vDirLight = _positionScaled.subtract(new Vector3f(bx,by,bz));
+                                 vDirLight.normalizeLocal();
+                                 // calcul du vecteur dir entre l'obstacle et la case
+                                 Vector3f vDirVoxel = new Vector3f(px,py,pz).subtract(new Vector3f(bx,by,bz));
+                                 vDirVoxel.normalizeLocal();
+                                 // calcul du dot product
+                                 float dot = vDirLight.dot(vDirVoxel);
+                                 System.out.println("dot : " + dot);
+                                 // si le dot est proche de 1 alors on assombri
+                                 if((dot > 0.8f) && distCurrentLight >= distVoxelLight)
+                                 {
+                                     map.getGridLightFactor()[(by * map.getzWidth()) + (bz * map.getHeightMap()) + bx] = 0x00;
+                                 // on ajoute dans le listvoxels
+                                 _listVoxels.add(new Vector3f(bx,by,bz));
+                                 
+                                 System.out.println("Obscurite sur x : " + bx + " y : " + bz);
+                                 
+                                 // position du voxel de recherche - on passe toujours la position du voxel de base
+                                 projectShadow(map,px,py,pz);
+                                 
+                                 }
+                                
+                                 
+                             }
+                         }
+                    
+                    
+    }
     
-   
     
-    public void projectShadow(int x,int y, int z,MapLoader map)
+    public void projectLight(int x,int y, int z,MapLoader map)
     {
         // si le voxel current a déja été testé, on quitte
         for(Vector3f v : _listVoxels)
@@ -111,16 +170,15 @@ public class LightProbe
                 // si on est sur un voxel plein
                 if(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] != 0x00)
                 {
-                    // 
-                    continue;
+                   // appel récursif au projectShadow
+                    projectShadow(map,px,py,pz);
                 }
                 
                 // on est pas sur un voxel plein, on calcul le coefficient lightfactor
                 Vector3f posCurrent = new Vector3f(px,py,pz);
                 byte distance = (byte)Math.ceil(posCurrent.distance(_positionScaled));
                 
-               // System.out.println("distance: " + distance);
-                
+                            
                 if(distance < _radius )
                 {
                 
@@ -130,7 +188,7 @@ public class LightProbe
 
                     // appel recursif
                     
-                    projectShadow(px,py,pz,map);
+                    projectLight(px,py,pz,map);
                 }
                 
             }
