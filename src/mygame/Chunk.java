@@ -109,7 +109,7 @@ public class Chunk implements Savable
                 {
                      try
                      {
-                        _mapLoader.getGridMap3d()[(gy * _mapLoader.getzWidth()) + (gz * _mapLoader.getHeightMap()) + gx] &= 0xff01; // lightfactore à 1 
+                        _mapLoader.getGridMap3d()[(gy * _mapLoader.getzWidth()) + (gz * _mapLoader.getHeightMap()) + gx] &= 0xff00; // lightfactore à 0 
                      }
                      catch(java.lang.ArrayIndexOutOfBoundsException a){}
                 }
@@ -136,6 +136,9 @@ public class Chunk implements Savable
      
       int width = _mapLoader.getWidthMap();
       int height =  _mapLoader.getHeightMap();
+      
+      // black
+      ColorRGBA black = new ColorRGBA(0.05f,0.05f,0.05f,1);
       
           
         for(int z=(int)_worldPosition.y; z < (int)_worldPosition.y + 16 ;z++)
@@ -172,20 +175,22 @@ public class Chunk implements Savable
                                  {
                                      // récupération du lightfactor du voxel vide
                                      short lightFactor = (short)(_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff);
-
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
                                  
                                  
@@ -216,20 +221,22 @@ public class Chunk implements Savable
                                  {
                                      // récupération du lightfactor du voxel vide
                                      short lightFactor = (short)(_mapLoader.getGridMap3d()[(ry*_mapLoader.getzWidth())+(z * height)+x] & 0x00ff);
-
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
 
                             }
@@ -256,24 +263,26 @@ public class Chunk implements Savable
                                  vNorm.add(new Vector3f(1,0,0));
                                  vNorm.add(new Vector3f(1,0,0));
                                  
-                                 try
+                                  try
                                  {
                                      // récupération du lightfactor du voxel vide
                                      short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0x00ff);
-
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
 
                             }
@@ -299,24 +308,26 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(-1,0,0));
                                 vNorm.add(new Vector3f(-1,0,0));
                                 
-                               try
+                                try
                                  {
                                      // récupération du lightfactor du voxel vide
-                                    short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0x00ff);
-
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+rx] & 0x00ff);
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
                                 
                                 
@@ -344,24 +355,26 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(0,0,-1));
                                 vNorm.add(new Vector3f(0,0,-1));
                                 
-                                try
+                                 try
                                  {
                                      // récupération du lightfactor du voxel vide
-                                    short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
-
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
                                 
                            }
@@ -387,24 +400,26 @@ public class Chunk implements Savable
                                 vNorm.add(new Vector3f(0,0,1));
                                 vNorm.add(new Vector3f(0,0,1));
                                 
-                                try
+                                 try
                                  {
                                      // récupération du lightfactor du voxel vide
-                                    short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
-
+                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
+                                    
                                     // Color avec application du lightfactor
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
-                                    vColor.add(new ColorRGBA(1,1,1,1).multLocal(lightFactor));
+                                    ColorRGBA light = ColorRGBA.White;
+                                    light = light.mult(lightFactor / 7f);
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
+                                    vColor.add(black.add(light));
                                  }
                                  catch(ArrayIndexOutOfBoundsException a)
                                  {
                                      // color sans application du lightfactor (si on est au bout de la carte)
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
-                                    vColor.add(new ColorRGBA(1,1,1,1));
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
+                                     vColor.add(black);
                                  }
                                 
                            }

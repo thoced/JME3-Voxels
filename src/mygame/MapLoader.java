@@ -110,7 +110,7 @@ public class MapLoader
                     // instance du gridmap3d
                     _gridMap3d = new short[_widthMap * _heightMap * 256];
                     for(int i=0;i<_gridMap3d.length;i++)
-                        _gridMap3d[i] = 0x0001;  // 1 byte = voxel vide, 2 byte = lightfactore à 1
+                        _gridMap3d[i] = 0x0000;  // 1 byte = voxel vide, 2 byte = lightfactore à 1
                     
                     // create de ZWith
                     _zWidth = _widthMap * _heightMap;

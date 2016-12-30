@@ -256,7 +256,7 @@ public class VoxelAppState extends AbstractAppState {
         int x = (int)(p.x / 16);
         int y = (int)(p.z / 16);
         // instance d'un nouveau lightprobe
-        LightProbe probe = new LightProbe(p,5f);
+        LightProbe probe = new LightProbe(p,7f);
         // reception du node contenu le chunk avec les indices x et y
         Spatial sc = _nodeVoxelChunks.getChild("[" + x + "][" + y + "]");
         System.out.println("[" + x + "][" + y + "]");

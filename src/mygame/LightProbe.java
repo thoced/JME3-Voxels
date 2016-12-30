@@ -86,7 +86,8 @@ public class LightProbe
                         // si c'est un voxel vide, on passe a l'éclairage
                         try
                         {
-                          map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] |= computeLightFactor(x,y,z,px,py,pz);
+                          map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] |= 
+                                  computeLightFactor(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px],x,y,z,px,py,pz);
                         }
                         catch(ArrayIndexOutOfBoundsException a)
                         {
@@ -105,7 +106,7 @@ public class LightProbe
          float dist = v.distance(_positionScaled);
          Vector3f dir = (v.subtract(_positionScaled)).normalize();
          // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
-         projectShadow(v,dir,(int)3,map);
+        // projectShadow(v,dir,(int)3,map);
          
       }
         
@@ -118,14 +119,31 @@ public class LightProbe
         {
             Vector3f p = posVoxel.add(dir.mult(i));
             // on ombre
-            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] |= 0x0001;
+            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] |= 0x0000;
         }
     }
     
     
-    public short computeLightFactor(int x, int y, int z, int px,int py,int pz)
+    public short computeLightFactor(short lightFactor,int x, int y, int z, int px,int py,int pz)
     {
-        return 0x0002;
+        // formule = _radius - distance
+        Vector3f v1 = new Vector3f(px,py,pz);
+        Vector3f v2 = new Vector3f(x,y,z);
+       //Vector3f sous = v2.subtract(v1);
+        float dist = (float)Math.ceil(v1.distance(v2));  
+        short val = (short)_radius;
+        short d = (short)(val - (short)dist + lightFactor);
+        if(d < 0x0000)
+            d = 0x0000;
+        if(d > val)
+            d = val;
+        
+        if(d > 0x0000)
+        {
+            int popo = 0;
+        }
+        
+        return (short)(d);
     }
      
     
