@@ -66,7 +66,8 @@ public class LightProbe
         int y = (int)_positionScaled.y;
         int z = (int)_positionScaled.z;
         
-        System.out.println("x : " + x + " y : " + y + " z " + z);
+        // on place la lumière maximal à l'endroit du lightprobe
+        map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x] = 0x07;
         
         if(x < 0 || y < 0 || z < 0)
             return;
@@ -79,21 +80,21 @@ public class LightProbe
                for(int py = y - (int)_radius; py < y + (int)_radius; py ++)
                {
                    // on place dans une liste les voxel plein pour la creation des ombres
-                    if((map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] & 0xff00) != 0x0000)
+                    if(map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] != 0x00)
                         _listVoxels.add(new Vector3f((int)px,(int)py,(int)pz));
-                    else
-                    {
+                    //else
+                   // {
                         // si c'est un voxel vide, on passe a l'éclairage
                         try
                         {
-                          map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] |= 
-                                  computeLightFactor(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px],x,y,z,px,py,pz);
+                          map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] = 
+                                  computeLightFactor(map.getGridLightFactor()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px],x,y,z,px,py,pz);
                         }
                         catch(ArrayIndexOutOfBoundsException a)
                         {
 
                         }
-                    }
+                   // }
                    
                }
           }
@@ -103,47 +104,67 @@ public class LightProbe
       for(Vector3f v : _listVoxels)
       {
           // calcul du vecteur direction normalize
-         float dist = v.distance(_positionScaled);
-         Vector3f dir = (v.subtract(_positionScaled)).normalize();
+      
          // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
-         projectShadow(v,dir,(int)_radius - (int)dist,map);
+         projectShadow(v,map);
          
       }
         
        
     }
     
-    public void projectShadow(Vector3f posVoxel,Vector3f dir, int nbIteration,MapLoader map)
+    public void projectShadow(Vector3f p,MapLoader map)
     {
-        for(int i=0;i<nbIteration;i++)
+        // pour chaque voxel, on regarde autour et tout ce qui est inférieur à sa valeur de lightfactor est diminué de 1
+        // et ensuite appel récursif en positionne le posVoxel à la position du node vérifié
+        
+        for(int z=(int)p.z-1 ; z < (int)p.z + 2;z++)
         {
-            Vector3f p = posVoxel.add(dir.mult(i));
-            // on ombre
-            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] &= 0xff00;
+            for(int x=(int)p.x-1 ; x < (int)p.x + 2;x++)
+            {
+                for(int y=(int)p.y-1 ; y < (int)p.y + 2;y++)
+                {
+                    if(x == (int)p.x && y == (int)p.y && z == (int)p.z)
+                        continue;
+                 
+                   
+                    byte lightFactor =  map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x];
+                    byte lightFactorVoxel = map.getGridLightFactor()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x];
+                    if(lightFactor < lightFactorVoxel)
+                    {
+                        lightFactor -= 0x01;
+                        if(lightFactor < 0x00)
+                            lightFactor = 0x00;
+                        
+                        map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x] = lightFactor;
+                        
+                    }
+                    
+                }
+            }
+            
         }
+        
+      
     }
     
     
-    public short computeLightFactor(short lightFactor,int x, int y, int z, int px,int py,int pz)
+    public byte computeLightFactor(byte curentlightFactor,int x, int y, int z, int px,int py,int pz)
     {
         // formule = _radius - distance
         Vector3f v1 = new Vector3f(px,py,pz);
         Vector3f v2 = new Vector3f(x,y,z);
        //Vector3f sous = v2.subtract(v1);
         float dist = (float)Math.ceil(v1.distance(v2));  
-        short val = (short)_radius;
-        short d = (short)(val - (short)dist + lightFactor);
-        if(d < 0x0000)
-            d = 0x0000;
+        byte val = (byte)_radius;
+        byte d = (byte)(val - (byte)dist + curentlightFactor);
+        if(d < 0x00)
+            d = 0x00;
         if(d > val)
             d = val;
+             
         
-        if(d > 0x0000)
-        {
-            int popo = 0;
-        }
-        
-        return (short)(d);
+        return (byte)(d);
     }
      
     

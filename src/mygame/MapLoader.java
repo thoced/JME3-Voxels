@@ -31,10 +31,12 @@ public class MapLoader
     private int _zWidth;
     
     // tableau heightmap
-    private short[] _heighMapGrid;
+    private byte[] _heighMapGrid;
     // tableau du grid 3d
-    private short[] _gridMap3d;   // 1er byte : type
+    private byte[] _gridMap3d;   // 1er byte : type
                                 // 2eme byte : lightfactor
+    
+    private byte[] _gridLightFactor;
     
     //debug
     private Collection debug;
@@ -87,7 +89,7 @@ public class MapLoader
                 buffer.position(0);
                
                 // instance de la mappixels
-                _heighMapGrid = new short[_widthMap * _heightMap];
+                _heighMapGrid = new byte[_widthMap * _heightMap];
                 
                 System.out.println(image.getFormat());
                 
@@ -101,16 +103,24 @@ public class MapLoader
                         for(int x=0;x<_widthMap;x++)
                         {
                                            
-                            _heighMapGrid[(y * _heightMap) + x] = (short)(buffer.get() & 0xff); // for unsigned byte
+                            _heighMapGrid[(y * _heightMap) + x] = (byte)(buffer.get() & 0xff); // for unsigned byte
                           
                         }
                     }
                     
                    
                     // instance du gridmap3d
-                    _gridMap3d = new short[_widthMap * _heightMap * 256];
+                    _gridMap3d = new byte[_widthMap * _heightMap * 256];
+                     // instance de girdlightfactor
+                   _gridLightFactor = new byte[_widthMap * _heightMap * 256];
+                   
                     for(int i=0;i<_gridMap3d.length;i++)
-                        _gridMap3d[i] = 0x0000;  // 1 byte = voxel vide, 2 byte = lightfactore à 1
+                    {
+                        _gridMap3d[i] = 0x00;  // 1 byte = voxel
+                        _gridLightFactor[i] = 0x00;
+                    }
+                    
+                   
                     
                     // create de ZWith
                     _zWidth = _widthMap * _heightMap;
@@ -153,20 +163,27 @@ public class MapLoader
     {
         for(short y=0;y < value;y++)
         { 
-           _gridMap3d[(y*_zWidth)+(z * _heightMap)+x] = 0x0101;
+           _gridMap3d[(y*_zWidth)+(z * _heightMap)+x] = 0x01;
+           _gridLightFactor[(y*_zWidth)+(z * _heightMap)+x] = 0x01;
             
         }
         
     }
     
 
-    public short[] getHeighMapGrid() {
+    public byte[] getHeighMapGrid() {
         return _heighMapGrid;
     }
 
-    public short[] getGridMap3d() {
+    public byte[] getGridMap3d() {
         return _gridMap3d;
     }
+
+    public byte[] getGridLightFactor() {
+        return _gridLightFactor;
+    }
+    
+    
         
     public int getWidthMap() {
         return _widthMap;

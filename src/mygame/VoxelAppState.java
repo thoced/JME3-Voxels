@@ -130,7 +130,7 @@ public class VoxelAppState extends AbstractAppState {
     public void addVoxelToGrid(Vector3f p)
     {
         // ajout du voxel dans la grid3d generale
-        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] |= 0x0100;
+        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] = 0x01;
         // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk
@@ -154,7 +154,7 @@ public class VoxelAppState extends AbstractAppState {
     public void subVoxelToGrid(Vector3f p)
     {
         // suppresion du voxel dans la grid3d generale
-        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] &= 0x00ff;
+        _map.getGridMap3d()[((int)p.y*_map.getzWidth()) + ((int)p.z * _map.getHeightMap()) + (int) p.x] = 0x00;
          // on détermine le chunk qui correspond à la modification pour réinitialiser le mesh
         Vector2f chunkPos = new Vector2f((int)p.x / 16,(int)p.z / 16);
         // appel à la methode update du chunk ainsi que les 8 autres chunk
