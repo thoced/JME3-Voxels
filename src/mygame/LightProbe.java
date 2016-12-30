@@ -106,7 +106,7 @@ public class LightProbe
          float dist = v.distance(_positionScaled);
          Vector3f dir = (v.subtract(_positionScaled)).normalize();
          // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
-        // projectShadow(v,dir,(int)3,map);
+         projectShadow(v,dir,(int)_radius - (int)dist,map);
          
       }
         
@@ -119,7 +119,7 @@ public class LightProbe
         {
             Vector3f p = posVoxel.add(dir.mult(i));
             // on ombre
-            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] |= 0x0000;
+            map.getGridMap3d()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x] &= 0xff00;
         }
     }
     
