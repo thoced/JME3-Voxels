@@ -358,7 +358,7 @@ public class Chunk implements Savable
                                  try
                                  {
                                      // récupération du lightfactor du voxel vide
-                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
+                                     short lightFactor = (byte)(_mapLoader.getGridLightFactor()[(y*_mapLoader.getzWidth())+(rz * height)+x]);
                                     
                                     // Color avec application du lightfactor
                                     ColorRGBA light = ColorRGBA.White;
@@ -403,7 +403,7 @@ public class Chunk implements Savable
                                  try
                                  {
                                      // récupération du lightfactor du voxel vide
-                                     short lightFactor = (short)(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(rz * height)+x] & 0x00ff);
+                                     short lightFactor = (byte)(_mapLoader.getGridLightFactor()[(y*_mapLoader.getzWidth())+(rz * height)+x]);
                                     
                                     // Color avec application du lightfactor
                                     ColorRGBA light = ColorRGBA.White;
