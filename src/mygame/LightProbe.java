@@ -20,6 +20,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -35,7 +38,9 @@ public class LightProbe
     
     private float    _radius = 2f;
     
-    private Collection<Vector3f> _listVoxels;
+    private ArrayList<Vector3f> _listVoxels;
+    
+    private ArrayList<Vector3f> _copyListVoxels;
     
     private AssetManager _asset;
     
@@ -48,9 +53,9 @@ public class LightProbe
         this._position = position;
         this._positionNormalized = this._position.normalize();
         this._radius = radius;
+        
         _listVoxels = new ArrayList<Vector3f>();
-        
-        
+            
         // calcul de la position dans le grid3d
         int x = (int)_position.x;
         int y = (int)_position.y;
@@ -66,6 +71,7 @@ public class LightProbe
     {
         // mise à zero de la liste
         _listVoxels.clear();
+      
         
         // calcul de la position dans le grid3d
         int x = (int)_positionScaled.x;
@@ -106,18 +112,23 @@ public class LightProbe
           }
       }
       
-     
-      
-      // calcul des ombres, pour chaque voxels, on calcul le vecteur directeur
-      for(Vector3f v : _listVoxels)
-      {
-          // calcul du vecteur direction normalize
-      
-         // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
-         projectShadow(v,map);
-         
-      }
         
+      
+     /*  Iterator<Vector3f> iterator = _listVoxels.iterator();
+       while(iterator.hasNext())
+       {
+           Vector3f v = iterator.next();
+           
+             // a partir de la position du voxel, on avance avec le vecteur directionnel et on ombre les cases
+           projectShadow(v,map);
+       }*/
+       
+       for(Vector3f v : _listVoxels)
+       {
+            projectShadow(v,map);
+       }
+        
+     
        
     }
     
@@ -154,15 +165,18 @@ public class LightProbe
                        Vector3f vDirVoxelToLight = (_positionScaled.subtract(p)).normalize();
                        // calcul dot product
                        float dot = vDirCurrentToLight.dot(vDirVoxelToLight);
-                       // si le dot vaut 1 alors il y a sombrage
-                       if(dot > 0.9f)
+                       // si le dot vaut 1 alors il y a ombrage
+                       if(dot > 0.9f || dot < 0.1f)
                        {
                            // ombrage
-                           map.getGridLightFactor()[((int)y * map.getzWidth()) + ((int)z* map.getHeightMap()) + (int)x] = 0x01;
+                           map.getGridLightFactor()[((int)y * map.getzWidth()) + ((int)z* map.getHeightMap()) + (int)x] = 0x00;
                            // ajout dans le listvoxel
-                           _listVoxels.add(pCurrent);
+                          // _listVoxels.add(pCurrent);
+                         
                        }
+                      
                    }
+                  
                    
                    
 
