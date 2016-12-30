@@ -78,14 +78,14 @@ public class LightProbe
         if(x < 0 || y < 0 || z < 0)
             return;
         
-       
+       int py = y;
       for(int pz = z - (int)_radius; pz <= z + (int)_radius; pz ++)
       {
           for(int px = x - (int)_radius; px <= x + (int)_radius; px ++)
           {
              
-               for(int py = y - (int)_radius; py <= y + (int)_radius; py ++)
-               {
+              // for(int py = y - (int)_radius; py <= y + (int)_radius; py ++)
+              // {
                    // on place dans une liste les voxel plein pour la creation des ombres
                     if(map.getGridMap3d()[(py * map.getzWidth()) + (pz * map.getHeightMap()) + px] != 0x00)
                         _listVoxels.add(new Vector3f((int)px,(int)py,(int)pz));
@@ -102,7 +102,7 @@ public class LightProbe
                         }
                    
                        
-               }
+              // }
           }
       }
       
@@ -129,38 +129,45 @@ public class LightProbe
         // et ensuite appel récursif en positionne le posVoxel à la position du node vérifié
         
          byte lightFactorVoxel = map.getGridLightFactor()[((int)p.y * map.getzWidth()) + ((int)p.z * map.getHeightMap()) + (int)p.x];
-        
+         
+         float distVoxelToLight = p.distance(_positionScaled);
+         
+        int y = (int)p.y;
         for(int z=(int)p.z-1 ; z <= (int)p.z + 1;z++)
         {
             for(int x=(int)p.x-1 ; x <= (int)p.x + 1;x++)
             {
-                for(int y=(int)p.y-1 ; y <= (int)p.y + 1;y++)
-                {
+                //for(int y=(int)p.y-1 ; y <= (int)p.y + 1;y++)
+                //{
                     if(x == (int)p.x && y == (int)p.y && z == (int)p.z)
-                    {
-                        
-                    }
-                    else
-                    {
-                 
+                        continue;
                    
-                        byte lightFactor =  map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x];
-                        if(lightFactor <= lightFactorVoxel)
-                        {
-                            lightFactor -= lightFactorVoxel;
-                            if(lightFactor < 0x01)
-                                lightFactor = 0x01;
+                   Vector3f pCurrent = new Vector3f(x,y,z);
+                    // calcul de la distance current node to light
+                   float distCurrentToLight =pCurrent.distance(_positionScaled);
+                   // si la distance current to light est plus grand que la distance voxel to light
+                   if(distCurrentToLight > distVoxelToLight)
+                   {
+                       // calcul du vecteur dir entre le current node et la lumière
+                       Vector3f vDirCurrentToLight = (_positionScaled.subtract(pCurrent)).normalize();
+                       // calcul du vecteur di entre le voxel et la lumière
+                       Vector3f vDirVoxelToLight = (_positionScaled.subtract(p)).normalize();
+                       // calcul dot product
+                       float dot = vDirCurrentToLight.dot(vDirVoxelToLight);
+                       // si le dot vaut 1 alors il y a sombrage
+                       if(dot > 0.9f)
+                       {
+                           // ombrage
+                           map.getGridLightFactor()[((int)y * map.getzWidth()) + ((int)z* map.getHeightMap()) + (int)x] = 0x01;
+                           // ajout dans le listvoxel
+                           _listVoxels.add(pCurrent);
+                       }
+                   }
+                   
+                   
 
-                           map.getGridLightFactor()[(y * map.getzWidth()) + (z * map.getHeightMap()) + x] = lightFactor;
-
-                           // appel récursif
-                          Vector3f np = new Vector3f(x,y,z);
-                          projectShadow(np,map);
-
-                        }
-                    }
                     
-                }
+                //}
             }
             
         }
