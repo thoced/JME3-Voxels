@@ -30,6 +30,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.util.BufferUtils;
@@ -58,6 +59,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Geometry _mark;
     private Vector3f _offsetVoxel;
     
+     
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
@@ -68,6 +70,7 @@ public class Main extends SimpleApplication implements ActionListener{
        
         // instance
         this.getFlyByCamera().setMoveSpeed(64.0f);
+        this.getFlyByCamera().setEnabled(true);
         // distance de vue
         this.getCamera().setFrustumFar(256);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
@@ -103,7 +106,16 @@ public class Main extends SimpleApplication implements ActionListener{
        _offsetVoxel = new Vector3f(0.5f,0.5f,0.5f);
        // initMark
        this.initMark();
+       // init camera
+       this.initCamera();
  
+    }
+    
+    private void initCamera()
+    {
+        
+        
+        
     }
     
      private void initKeys()
