@@ -1,5 +1,6 @@
 package mygame;
 
+import appState.FinderAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -48,6 +49,7 @@ import jme3tools.optimize.GeometryBatchFactory;
 public class Main extends SimpleApplication implements ActionListener{
 
     private VoxelAppState _voxelAppState;
+    private FinderAppState _finderAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -87,10 +89,14 @@ public class Main extends SimpleApplication implements ActionListener{
        // creation du AppStateVoxel
         _voxelAppState = new VoxelAppState();
         this.stateManager.attach(_voxelAppState);
+        
+       // creation du AppStateFinder
+       _finderAppState = new FinderAppState();
+       this.stateManager.attach(_finderAppState);
             
        // Light
        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setColor(new ColorRGBA(0.1f,0.075f,0.075f,1));
+        ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();
@@ -128,8 +134,16 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("SUB_VOXEL", 
                 new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
+         inputManager.addMapping("START_PATH", 
+                new KeyTrigger(KeyInput.KEY_1));
+         
+         inputManager.addMapping("GOAL_PATH", 
+                new KeyTrigger(KeyInput.KEY_2));
+        
         inputManager.addListener(this, "ADD_VOXEL");
         inputManager.addListener(this, "SUB_VOXEL");
+         inputManager.addListener(this, "START_PATH");
+          inputManager.addListener(this, "GOAL_PATH");
      }
      
      private void initMark()
@@ -191,12 +205,22 @@ public class Main extends SimpleApplication implements ActionListener{
                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
                         _voxelAppState.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                     }
-                    else
+                    else if(name.equals("SUB_VOXEL"))
                     {
                         // position du voxel a supprimer
                           Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
                          _voxelAppState.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                     }
+                    
+                      if(name.equals("START_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setStartPoint(voxelPos);
+                      }
+                      
+                      if(name.equals("GOAL_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setGoalPoint(voxelPos);
+                      }
                         
                 }
  

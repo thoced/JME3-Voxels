@@ -1,0 +1,15 @@
+ShaderNodeDefinitions{ 
+    ShaderNodeDefinition  {      
+        Type: Fragment
+
+        Shader GLSL100: Materials/newSNDefTemplate100.frag
+        
+        Documentation{
+                        
+        }
+        Input {
+        }
+        Output {
+        }
+    }
+}

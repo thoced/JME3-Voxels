@@ -38,6 +38,11 @@ public class VoxelAppState extends AbstractAppState {
     private Node _nodeVoxelChunk;
     
     private Material _mat;
+
+    public MapLoader getMap() {
+        return _map;
+    }
+    
     
     @Override
     public void initialize(AppStateManager stateManager, Application app)
