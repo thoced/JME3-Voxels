@@ -227,8 +227,7 @@ public class MapLoader implements TileBasedMap
             // augment le cout lorsque qu'il faut escalader
             return 0.8f;
         }
-        
-                    
+    
        return 0.5f;
             
             

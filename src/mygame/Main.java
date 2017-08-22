@@ -61,6 +61,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Geometry _mark;
     private Vector3f _offsetVoxel;
     
+    private Spatial bon;
      
     public static void main(String[] args) {
         Main app = new Main();
@@ -115,6 +116,11 @@ public class Main extends SimpleApplication implements ActionListener{
        // init camera
        this.initCamera();
  
+       //test bonhomme
+       bon = assetManager.loadModel("Models/bilou/bilou.j3o");
+       
+       
+       
     }
     
     private void initCamera()
@@ -139,11 +145,15 @@ public class Main extends SimpleApplication implements ActionListener{
          
          inputManager.addMapping("GOAL_PATH", 
                 new KeyTrigger(KeyInput.KEY_2));
+         
+          inputManager.addMapping("BON", 
+                new KeyTrigger(KeyInput.KEY_B));
         
         inputManager.addListener(this, "ADD_VOXEL");
         inputManager.addListener(this, "SUB_VOXEL");
          inputManager.addListener(this, "START_PATH");
           inputManager.addListener(this, "GOAL_PATH");
+           inputManager.addListener(this, "BON");
      }
      
      private void initMark()
@@ -220,6 +230,12 @@ public class Main extends SimpleApplication implements ActionListener{
                       if(name.equals("GOAL_PATH")){
                           Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
                           _finderAppState.setGoalPoint(voxelPos);
+                      }
+                      
+                      if(name.equals("BON")){
+                          Vector3f voxelPos = closest.getContactPoint();
+                          bon.setLocalTranslation(voxelPos);
+                          rootNode.attachChild(bon);
                       }
                         
                 }
