@@ -1,0 +1,24 @@
+Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        Diffuse : 0.57843316 0.5306727 0.013746211 1.0
+        UseMaterialColors : false
+        ParallaxHeight : 0.05
+        Ambient : 0.7230414 0.6633409 0.017182764 1.0
+        GlowColor : 0.0 0.0 0.0 1.0
+        BackfaceShadows : false
+        DiffuseMap : WrapRepeat_S WrapRepeat_T "Models/bilou/diffuse_head.png"
+        Specular : 0.5 0.5 0.5 1.0
+        Shininess : 12.5
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Off
+      Wireframe Off
+    }
+}

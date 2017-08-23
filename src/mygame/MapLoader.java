@@ -14,12 +14,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import pathfinding.PathFindingContext;
+import pathfinding.TileBasedMap;
 
 /**
  *
  * @author Thonon
  */
-public class MapLoader 
+public class MapLoader implements TileBasedMap
 {
     
     private String _nameFile = null;
@@ -180,6 +182,55 @@ public class MapLoader
 
     public int getzWidth() {
         return _zWidth;
+    }
+
+    @Override
+    public int getDepthInTiles() {
+       return 256;
+    }
+
+    @Override
+    public int getWidthInTiles() {
+        return _widthMap;
+    }
+
+    @Override
+    public int getHeightInTiles() {
+       return _heightMap;
+    }
+
+    @Override
+    public void pathFinderVisited(int x, int y, int z) {
+       System.out.println("visited: " + x + " " + y + " " + z);
+    }
+
+    @Override
+    public boolean blocked(PathFindingContext context, int tx, int ty, int tz) {
+       
+        if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 1) // un bloc
+            return true;
+       
+         if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 0){ 
+             // deux vides l'un au dessus de l'autre ne sont pas franchissable
+             ty--;
+             if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 0)
+                 return true;
+         }
+         
+        return false;
+    }
+
+    @Override
+    public float getCost(PathFindingContext context, int tx, int ty, int tz) {
+
+        if(Math.abs(context.getSourceY() - ty) > 0.5f){
+            // augment le cout lorsque qu'il faut escalader
+            return 0.8f;
+        }
+    
+       return 0.5f;
+            
+            
     }
     
     

@@ -1,5 +1,6 @@
 package mygame;
 
+import appState.FinderAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -26,6 +27,7 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
@@ -33,7 +35,11 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.BufferUtils;
+import controllers.bonController;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +54,7 @@ import jme3tools.optimize.GeometryBatchFactory;
 public class Main extends SimpleApplication implements ActionListener{
 
     private VoxelAppState _voxelAppState;
+    private FinderAppState _finderAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -59,6 +66,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private Geometry _mark;
     private Vector3f _offsetVoxel;
     
+    private Spatial bon;
      
     public static void main(String[] args) {
         Main app = new Main();
@@ -87,10 +95,14 @@ public class Main extends SimpleApplication implements ActionListener{
        // creation du AppStateVoxel
         _voxelAppState = new VoxelAppState();
         this.stateManager.attach(_voxelAppState);
+        
+       // creation du AppStateFinder
+       _finderAppState = new FinderAppState();
+       this.stateManager.attach(_finderAppState);
             
        // Light
        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setColor(new ColorRGBA(0.1f,0.075f,0.075f,1));
+        ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();
@@ -109,6 +121,22 @@ public class Main extends SimpleApplication implements ActionListener{
        // init camera
        this.initCamera();
  
+       //test bonhomme
+       bon = assetManager.loadModel("Models/bilou/bilou.j3o");
+       bon.addControl(new bonController());
+       bon.setShadowMode(RenderQueue.ShadowMode.Cast);
+       
+       //shadow
+       final int SHADOWMAP_SIZE=4096;
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
+        dlsf.setLight(directionalLight);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.Nearest);
+        dlsf.setEnabled(true);
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
+        
+       
+       
     }
     
     private void initCamera()
@@ -128,8 +156,20 @@ public class Main extends SimpleApplication implements ActionListener{
         inputManager.addMapping("SUB_VOXEL", 
                 new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
+         inputManager.addMapping("START_PATH", 
+                new KeyTrigger(KeyInput.KEY_1));
+         
+         inputManager.addMapping("GOAL_PATH", 
+                new KeyTrigger(KeyInput.KEY_2));
+         
+          inputManager.addMapping("BON", 
+                new KeyTrigger(KeyInput.KEY_B));
+        
         inputManager.addListener(this, "ADD_VOXEL");
         inputManager.addListener(this, "SUB_VOXEL");
+         inputManager.addListener(this, "START_PATH");
+          inputManager.addListener(this, "GOAL_PATH");
+           inputManager.addListener(this, "BON");
      }
      
      private void initMark()
@@ -191,12 +231,33 @@ public class Main extends SimpleApplication implements ActionListener{
                         Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
                         _voxelAppState.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                     }
-                    else
+                    else if(name.equals("SUB_VOXEL"))
                     {
                         // position du voxel a supprimer
                           Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
                          _voxelAppState.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                     }
+                    
+                      if(name.equals("START_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setStartPoint(voxelPos);
+                      }
+                      
+                      if(name.equals("GOAL_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setGoalPoint(voxelPos);
+                      }
+                      
+                      if(name.equals("BON")){
+                          
+                          Spatial nB = bon.clone();
+                          bonController c = nB.getControl(bonController.class);
+                          c.setSpeed((float)Math.random() * 2f);
+                          
+                          Vector3f voxelPos = closest.getContactPoint();
+                          nB.setLocalTranslation(voxelPos);
+                          rootNode.attachChild(nB);
+                      }
                         
                 }
  
