@@ -27,6 +27,7 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
@@ -34,7 +35,11 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.BufferUtils;
+import controllers.bonController;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -118,7 +123,18 @@ public class Main extends SimpleApplication implements ActionListener{
  
        //test bonhomme
        bon = assetManager.loadModel("Models/bilou/bilou.j3o");
+       bon.addControl(new bonController());
+       bon.setShadowMode(RenderQueue.ShadowMode.Cast);
        
+       //shadow
+       final int SHADOWMAP_SIZE=4096;
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
+        dlsf.setLight(directionalLight);
+        dlsf.setEdgeFilteringMode(EdgeFilteringMode.Nearest);
+        dlsf.setEnabled(true);
+        fpp.addFilter(dlsf);
+        viewPort.addProcessor(fpp);
+        
        
        
     }
@@ -233,9 +249,14 @@ public class Main extends SimpleApplication implements ActionListener{
                       }
                       
                       if(name.equals("BON")){
+                          
+                          Spatial nB = bon.clone();
+                          bonController c = nB.getControl(bonController.class);
+                          c.setSpeed((float)Math.random() * 2f);
+                          
                           Vector3f voxelPos = closest.getContactPoint();
-                          bon.setLocalTranslation(voxelPos);
-                          rootNode.attachChild(bon);
+                          nB.setLocalTranslation(voxelPos);
+                          rootNode.attachChild(nB);
                       }
                         
                 }

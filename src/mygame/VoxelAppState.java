@@ -14,6 +14,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -107,6 +108,7 @@ public class VoxelAppState extends AbstractAppState {
     {
          // pour chaque mesh on créer une geometrie
          Geometry geo = new Geometry(name,m);
+         geo.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
          geo.setMaterial(_mat);
          // ajout dans le node délégué au Chunk
          _nodeVoxelChunk.attachChild(geo);
