@@ -18,6 +18,7 @@ import mygame.MapLoader;
 import mygame.VoxelAppState;
 import pathfinding.AStarPathFinder;
 import pathfinding.Path;
+import pathfinding.heuristics.ClosestSquaredHeuristic;
 
 
 /**
@@ -47,7 +48,7 @@ public class FinderAppState extends AbstractAppState {
         VoxelAppState voxelAppState = stateManager.getState(VoxelAppState.class);
         map = voxelAppState.getMap();
         
-        finder = new AStarPathFinder(voxelAppState.getMap(),65535,true);
+        finder = new AStarPathFinder(voxelAppState.getMap(),65535*4,true,new ClosestSquaredHeuristic());
         
         sApp = (SimpleApplication)app;
         
@@ -108,11 +109,18 @@ public class FinderAppState extends AbstractAppState {
         System.out.print(" goal Y: " + gy );
         System.out.println(" goal Z: " + gz );
         
+        try
+        {
         System.out.println("Lancement de la recherche...");
         path = finder.findPath(null, sx, sy, sz, gx, gy, gz); // inversion des Y et Z
         System.out.println("Fin de la recherche...");
         if(path != null)
              System.out.println("Un chemin est trouvé...");
+        
+        }
+        catch(java.lang.ArrayIndexOutOfBoundsException a){
+             System.out.println("ArrayIndexOutOfBoundsException");
+        }
         
     }
     
