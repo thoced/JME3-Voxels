@@ -1,7 +1,9 @@
 package mygame;
 
 import appState.FinderAppState;
+import appState.MovementAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.effect.ParticleEmitter;
@@ -55,8 +57,10 @@ import jme3tools.optimize.GeometryBatchFactory;
  */
 public class Main extends SimpleApplication implements ActionListener{
 
+    private BulletAppState _bulletAppState;
     private VoxelAppState _voxelAppState;
     private FinderAppState _finderAppState;
+    private MovementAppState _movementAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -79,21 +83,17 @@ public class Main extends SimpleApplication implements ActionListener{
     public void simpleInitApp() {
        
         // instance
-        this.getFlyByCamera().setMoveSpeed(32.0f);
-        this.getFlyByCamera().setEnabled(true);
+        //this.getFlyByCamera().setMoveSpeed(32.0f);
+       // this.getFlyByCamera().setEnabled(true);
         // distance de vue
         this.getCamera().setFrustumFar(312);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
-        // Fog
-         /** Add fog to a scene */
-        FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
-        FogFilter fog = new FogFilter();
-        fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
-        fog.setFogDistance(300);
-        fog.setFogDensity(1.2f);
-        fpp.addFilter(fog);
-        viewPort.addProcessor(fpp);
+        
 
+        // creation de la physique
+        _bulletAppState = new BulletAppState();
+        this.stateManager.attach(_bulletAppState);
+        
        // creation du AppStateVoxel
         _voxelAppState = new VoxelAppState();
         this.stateManager.attach(_voxelAppState);
@@ -101,6 +101,10 @@ public class Main extends SimpleApplication implements ActionListener{
        // creation du AppStateFinder
        _finderAppState = new FinderAppState();
        this.stateManager.attach(_finderAppState);
+       
+       // creation du MovementAppState
+       _movementAppState = new MovementAppState();
+       this.stateManager.attach(_movementAppState);
             
        // Light
        AmbientLight ambientLight = new AmbientLight();
@@ -127,6 +131,16 @@ public class Main extends SimpleApplication implements ActionListener{
        bon = assetManager.loadModel("Models/bilou/bilou.j3o");
        bon.addControl(new bonController());
        bon.setShadowMode(RenderQueue.ShadowMode.Cast);
+       
+       // Fog
+         /** Add fog to a scene */
+        FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
+        FogFilter fog = new FogFilter();
+        fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
+        fog.setFogDistance(300);
+        fog.setFogDensity(1.2f);
+        fpp.addFilter(fog);
+        viewPort.addProcessor(fpp);
        
        //shadow
        final int SHADOWMAP_SIZE=4096;
