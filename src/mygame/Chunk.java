@@ -6,6 +6,9 @@
 package mygame;
 
 import com.jme3.bounding.BoundingBox;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -269,7 +272,8 @@ public class Chunk
             _meshChunk.setBuffer(Type.TexCoord,2,BufferUtils.createFloatBuffer(tb));
             _meshChunk.setBuffer(Type.Normal,3,BufferUtils.createFloatBuffer(vn));
                    
-  
+            _meshChunk.setMode(Mesh.Mode.Triangles);
+           
          // update du boundingBox
          _meshChunk.updateBound();
          // creation du mesh de collision
