@@ -52,7 +52,7 @@ public class VoxelAppState extends AbstractAppState {
         
         _app = app;
         // chargement de la map
-        _map = new MapLoader("Textures/map01/map09.png",app.getAssetManager());
+        _map = new MapLoader("Textures/map01/map14.png",app.getAssetManager());
                  
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
@@ -68,7 +68,7 @@ public class VoxelAppState extends AbstractAppState {
         _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
         _mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
         _mat.setTexture("DiffuseMap",
-        _app.getAssetManager().loadTexture("Textures/Textures/rock.jpg"));
+        _app.getAssetManager().loadTexture("Textures/Textures/grass.jpg"));
         _mat.setTexture("NormalMap", 
                 _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
         _mat.setFloat("Shininess", 64f);  // [0,128]
@@ -100,6 +100,7 @@ public class VoxelAppState extends AbstractAppState {
           lx = 0;
           
       }
+      System.out.println(_nodeVoxelChunk.getChildren().size());
       
        ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunk);
     }

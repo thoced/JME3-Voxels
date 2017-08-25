@@ -186,7 +186,7 @@ public class MapLoader implements TileBasedMap
 
     @Override
     public int getDepthInTiles() {
-       return 256;
+       return _heightMap;
     }
 
     @Override
@@ -196,7 +196,7 @@ public class MapLoader implements TileBasedMap
 
     @Override
     public int getHeightInTiles() {
-       return _heightMap;
+       return 256;
     }
 
     @Override

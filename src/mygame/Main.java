@@ -39,6 +39,8 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.SkyFactory;
+import com.jme3.water.WaterFilter;
 import controllers.bonController;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -77,17 +79,17 @@ public class Main extends SimpleApplication implements ActionListener{
     public void simpleInitApp() {
        
         // instance
-        this.getFlyByCamera().setMoveSpeed(64.0f);
+        this.getFlyByCamera().setMoveSpeed(32.0f);
         this.getFlyByCamera().setEnabled(true);
         // distance de vue
-        this.getCamera().setFrustumFar(256);
+        this.getCamera().setFrustumFar(312);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
         // Fog
          /** Add fog to a scene */
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter();
         fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
-        fog.setFogDistance(212);
+        fog.setFogDistance(300);
         fog.setFogDensity(1.2f);
         fpp.addFilter(fog);
         viewPort.addProcessor(fpp);
@@ -135,7 +137,20 @@ public class Main extends SimpleApplication implements ActionListener{
         fpp.addFilter(dlsf);
         viewPort.addProcessor(fpp);
         
+       // water see
+       Vector3f lightDir = new Vector3f(-4.9f, -1.3f, 5.9f);
+      // fpp = new FilterPostProcessor(assetManager);
+       WaterFilter water = new WaterFilter(rootNode, lightDir);
+       water.setWaterHeight(0);
+       water.setFoamIntensity(0.2f);
+       water.setWaterHeight(0.8f);
+       water.setSpeed(0.4f);
+       water.setDeepWaterColor(ColorRGBA.LightGray);
+       fpp.addFilter(water);
+       viewPort.addProcessor(fpp);
        
+       // sky
+       getRootNode().attachChild(SkyFactory.createSky(getAssetManager(), "Textures/Sky/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
        
     }
     
