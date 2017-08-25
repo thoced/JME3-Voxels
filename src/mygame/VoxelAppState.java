@@ -9,6 +9,10 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -19,6 +23,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,9 +33,15 @@ import java.util.Collection;
  */
 public class VoxelAppState extends AbstractAppState {
 
+    private int t=0;
+    
     private Application _app;
     
     private MapLoader _map;
+    
+    private RigidBodyControl _landscape;
+    
+    private BulletAppState _bulletAppState;
     
     //private Collection<Chunk> _listChunks;
     
@@ -51,6 +62,7 @@ public class VoxelAppState extends AbstractAppState {
         super.initialize(stateManager, app);
         
         _app = app;
+        _bulletAppState = _app.getStateManager().getState(BulletAppState.class);
         // chargement de la map
         _map = new MapLoader("Textures/map01/map14.png",app.getAssetManager());
                  
@@ -100,9 +112,13 @@ public class VoxelAppState extends AbstractAppState {
           lx = 0;
           
       }
-      System.out.println(_nodeVoxelChunk.getChildren().size());
+     
       
        ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunk);
+       
+       // initialisation de la physique
+       
+       
     }
     
     private void addNode(Mesh m,String name)
@@ -112,7 +128,34 @@ public class VoxelAppState extends AbstractAppState {
          geo.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
          geo.setMaterial(_mat);
          // ajout dans le node délégué au Chunk
+      
+      if(m.getTriangleCount() != 0){
+         // si et seulement si un triangle existe dans le chunk - évite une erreur fatal dans le Jbullet
+         
+         //   creation de la physique
+        CollisionShape sceneShape = CollisionShapeFactory.createMeshShape(geo);
+        if(sceneShape != null)
+          {
+           _landscape = new RigidBodyControl(sceneShape, 0);
+           geo.addControl(_landscape);
+           _bulletAppState.getPhysicsSpace().add(_landscape);
+           
+          }
+
+      }
+      
+       // ajout du node dans le NodeVoxelChunk
          _nodeVoxelChunk.attachChild(geo);
+        
+        
+    }
+    
+    public void removePhysic(Spatial sp){
+         if(sp != null){
+         RigidBodyControl c = sp.getControl(RigidBodyControl.class);
+         _bulletAppState.getPhysicsSpace().remove(c);
+         sp.removeControl(RigidBodyControl.class);
+                        }
     }
     
     public void addVoxelToGrid(Vector3f p)
@@ -126,8 +169,11 @@ public class VoxelAppState extends AbstractAppState {
         {
             // update du chunk (remesh)
             _gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x].updateMeshChunk();
+             // suppression de la physique du node
+             String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
+            Spatial sp = _nodeVoxelChunk.getChild(nameChunkSearch);
+            this.removePhysic(sp);
             //detachement du node
-            String nameChunkSearch = "[" + (int)chunkPos.x + "][" + (int)chunkPos.y + "]";
             _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
             // ajout du nouveau node avec le nouveau mesh
             this.addNode(_gridChunk[((int)chunkPos.y * (_map.getHeightMap() / 16)) +  (int)chunkPos.x].getMeshChunk(), nameChunkSearch);
@@ -155,7 +201,11 @@ public class VoxelAppState extends AbstractAppState {
                         // update du chunk (remesh) ainsi que les 8 autres chunk 
                         _gridChunk[((int)(chunkPos.y + dy) * (_map.getHeightMap() / 16)) +  (int)chunkPos.x + dx].updateMeshChunk();
                         //detachement du node
-                        String nameChunkSearch = "[" + (int)chunkPos.x + dx + "][" + (int)chunkPos.y + dy + "]";
+                        String nameChunkSearch = "[" + ((int)chunkPos.x + dx) + "][" + ((int)chunkPos.y + dy) + "]";
+                        // suppression de la physique du node
+                        Spatial sp = _nodeVoxelChunk.getChild(nameChunkSearch);
+                        this.removePhysic(sp);
+                        // detachement du node de la scene
                         _nodeVoxelChunk.detachChildNamed(nameChunkSearch);
                         // ajout du nouveau node avec le nouveau mesh
                         this.addNode(_gridChunk[((int)(chunkPos.y + dy) * (_map.getHeightMap() / 16)) +  (int)chunkPos.x + dx].getMeshChunk(), nameChunkSearch);
@@ -176,7 +226,7 @@ public class VoxelAppState extends AbstractAppState {
 
     @Override
     public void update(float tpf) {
-        //TODO: implement behavior during runtime
+        _bulletAppState.update(tpf);
     }
     
     @Override
