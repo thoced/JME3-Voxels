@@ -24,7 +24,8 @@ import pathfinding.TileBasedMap;
 public class MapLoader implements TileBasedMap
 {
     
-    private String _nameFile = null;
+    private String _absoluteNameMap;
+    private String _absoluteNameTree;
     
     private AssetManager _assetManager;
     
@@ -34,6 +35,8 @@ public class MapLoader implements TileBasedMap
     
     // tableau heightmap
     private short[] _heighMapGrid;
+    // tableau tree
+    private short[][] _treeGrid;
     // tableau du grid 3d
     private short[] _gridMap3d;
     
@@ -49,23 +52,72 @@ public class MapLoader implements TileBasedMap
     
     public MapLoader(String nameFile, AssetManager assetManager) 
     {
-        _nameFile = nameFile;
+         _absoluteNameMap = "Textures/maps/" + nameFile + "_heightmap.png";
+         _absoluteNameTree =  "Textures/maps/" + nameFile + "_tree.png";
+           
      
         _assetManager = assetManager;
         
         debug = new ArrayList();
         // chargement map
         loaderMap();
+        // chargement des trees
+        loaderTree();
      
+    }
+    
+    private void loaderTree(){
+        if(_absoluteNameTree == null)
+            return;
+                
+        // chargement des arbres sous forme de textures
+        Texture textureTree = _assetManager.loadTexture(_absoluteNameTree);
+        
+        if(textureTree != null){
+        
+            Image image = textureTree.getImage();
+            int wTree = image.getWidth();
+            int hTree = image.getHeight();
+            
+            // initilisation du treeGrid
+            _treeGrid = new short[wTree][hTree];
+            
+            Type typeTexture = textureTree.getType();
+            if(typeTexture == Type.TwoDimensional ){
+                ByteBuffer buffer = image.getData(0);
+                // positinnement du bufer
+                buffer.position(0);
+                
+                System.out.println(buffer.capacity());
+                
+                for(int y=0;y<hTree;y++){
+                    for(int x=0;x<wTree;x++){
+                        int val = ~buffer.get();
+                     //  System.out.println(String.format("%x", val));
+                       
+                        if(val != 0){
+                            // la valeur est différente de zéro, il y a donc un arbre
+                            short h =  _heighMapGrid[(y * hTree) + x];
+                            _treeGrid[x][y] = h;
+                            
+                        }else{
+                            _treeGrid[x][y] = -1;
+                        }
+                            
+                    }
+                }
+            }
+            
+        }
     }
     
     private void loaderMap()
     {
-        if(_nameFile == null)
+        if(_absoluteNameMap == null)
             return;
         
         // chargement de la map sous forme de texture
-        Texture textureMap = _assetManager.loadTexture(_nameFile);
+        Texture textureMap = _assetManager.loadTexture(_absoluteNameMap);
      
         
         // parse de la texture
@@ -157,8 +209,11 @@ public class MapLoader implements TileBasedMap
         
         
     }
-    
 
+    public short[][] getTreeGrid() {
+        return _treeGrid;
+    }
+   
     public short[] getHeighMapGrid() {
         return _heighMapGrid;
     }
