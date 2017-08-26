@@ -1,5 +1,6 @@
 package mygame;
 
+import appState.AssetLoaderAppState;
 import appState.FinderAppState;
 import appState.MovementAppState;
 import com.jme3.app.SimpleApplication;
@@ -83,13 +84,15 @@ public class Main extends SimpleApplication implements ActionListener{
     public void simpleInitApp() {
        
         // instance
-        //this.getFlyByCamera().setMoveSpeed(32.0f);
-       // this.getFlyByCamera().setEnabled(true);
+        this.getFlyByCamera().setMoveSpeed(32.0f);
+        this.getFlyByCamera().setEnabled(true);
         // distance de vue
         this.getCamera().setFrustumFar(312);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
         
-
+        // creation du AssetAppState
+        this.stateManager.attach(new AssetLoaderAppState());
+        
         // creation de la physique
         _bulletAppState = new BulletAppState();
         this.stateManager.attach(_bulletAppState);
@@ -104,7 +107,7 @@ public class Main extends SimpleApplication implements ActionListener{
        
        // creation du MovementAppState
        _movementAppState = new MovementAppState();
-       this.stateManager.attach(_movementAppState);
+       //this.stateManager.attach(_movementAppState);
             
        // Light
        AmbientLight ambientLight = new AmbientLight();
@@ -137,8 +140,8 @@ public class Main extends SimpleApplication implements ActionListener{
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter();
         fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
-        fog.setFogDistance(300);
-        fog.setFogDensity(0.8f);
+        fog.setFogDistance(340f);
+        fog.setFogDensity(0.4f);
         fpp.addFilter(fog);
         viewPort.addProcessor(fpp);
        
