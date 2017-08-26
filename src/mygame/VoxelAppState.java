@@ -35,7 +35,7 @@ public class VoxelAppState extends AbstractAppState {
 
     private int t=0;
     
-    private Application _app;
+    private SimpleApplication _app;
     
     private MapLoader _map;
     
@@ -49,7 +49,11 @@ public class VoxelAppState extends AbstractAppState {
     
     private Node _nodeVoxelChunk;
     
+    private Node _nodeTreeChunk;
+    
     private Material _mat;
+    
+    private Material _matTree;
 
     public MapLoader getMap() {
         return _map;
@@ -61,18 +65,21 @@ public class VoxelAppState extends AbstractAppState {
     {
         super.initialize(stateManager, app);
         
-        _app = app;
+        _app = (SimpleApplication)app;
         _bulletAppState = _app.getStateManager().getState(BulletAppState.class);
         // chargement de la map
-        _map = new MapLoader("Textures/map01/map15.png",app.getAssetManager());
-                 
+        _map = new MapLoader("newmap",app.getAssetManager());
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
         _gridChunk = new Chunk[(_map.getWidthMap() / 16) * (_map.getHeightMap() / 16)];
+        // manageChunk
         this.manageChunk();
+       
                
          
     }
+    
+   
     
     private void manageChunk()
     {
@@ -85,10 +92,19 @@ public class VoxelAppState extends AbstractAppState {
                 _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
         _mat.setFloat("Shininess", 64f);  // [0,128]
         _mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Back);
-       
+                   
+        // Création du material pour le tree
+         _matTree = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
+         _matTree.setTexture("DiffuseMap", 
+                 _app.getAssetManager().loadTexture("Models/Trees/Tree01/diffuse.png"));
+         _matTree.setColor("Diffuse", ColorRGBA.White);
+        
         // creation du nodeVoxelChunk
         _nodeVoxelChunk = new Node();
         _nodeVoxelChunk.setName("NODE_VOXEL_CHUNK");
+        // creation du nodeTreeChunk
+        _nodeTreeChunk = new Node();
+        _nodeTreeChunk.setName("NODE_TREE_CHUNK");
         
       int lx=0,ly=0;
       for(int y=0;y<_map.getHeightMap();y+=16)
@@ -102,9 +118,10 @@ public class VoxelAppState extends AbstractAppState {
               _gridChunk[(ly * (_map.getHeightMap() / 16)) + lx] = c;
               // ajout dans le scene graph
               // pour chaque chunk, on récupère le mesh
-              Mesh m = c.getMeshChunk();
               // ajout du node
-              addNode(m,c.getNameChunk());  
+              addNode(c.getMeshChunk(),c.getNameChunk());  
+              // ajout du tree
+              addPatchTree(c.getMeshTree(),c.getNameChunk());
               lx++;
              
           }
@@ -112,13 +129,17 @@ public class VoxelAppState extends AbstractAppState {
           lx = 0;
           
       }
-     
-      
        ((SimpleApplication)_app).getRootNode().attachChild(_nodeVoxelChunk);
-       
-       // initialisation de la physique
-       
-       
+       ((SimpleApplication)_app).getRootNode().attachChild(_nodeTreeChunk);
+
+    }
+    
+    private void addPatchTree(Mesh m,String name){
+        Geometry geo = new Geometry(name,m);
+        geo.setShadowMode(RenderQueue.ShadowMode.Cast);
+        geo.setMaterial(_matTree);
+        _nodeTreeChunk.attachChild(geo);
+        
     }
     
     private void addNode(Mesh m,String name)
