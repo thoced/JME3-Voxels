@@ -11,13 +11,18 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Quad;
 import com.jme3.util.BufferUtils;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import jme3tools.optimize.GeometryBatchFactory;
 import mygame.Voxel.TypeVoxel;
 
 /**
@@ -42,21 +47,23 @@ public class Chunk
     
     private Mesh _meshChunk;
     
+    private Mesh _meshTree;
+    
     public Chunk(Vector2f worldPosition,MapLoader mapLoader) 
     {
         _worldPosition = worldPosition;
         _mapLoader = mapLoader;
         _nameChunk = "[" + (int)_worldPosition.x + "][" + (int)_worldPosition.y + "]"; 
-        // instance du listVoxels
-        //_listVoxels = new ArrayList<Voxel>();
-       //_gridChunk = new short[65536];
-       
-        // makemeshchunk
-        //makeGridChunk();
-        // make mesh chunk
+      
+        // instance du MeshChunk
         _meshChunk = new Mesh();
-        //makeMeshChunk();
+        // instance du Mesh Tree
+        _meshTree  = new Mesh();
+        
+        // construction du MeshChunk
         makeMeshChunk();
+        // construction du patch tree
+        makeTreePatch();
     }
     
     public void updateMeshChunk()
@@ -71,6 +78,28 @@ public class Chunk
         // appel au makemeshchunk
         makeMeshChunk();
  
+    }
+    
+    private void makeTreePatch(){
+       Spatial treeS = SingleModelAsset.getInstance().getListAsset().get("tree01");
+       Collection<Geometry> treeCollection = new ArrayList<Geometry>();
+       
+       for(int y = (int)_worldPosition.y; y < (int)_worldPosition.y + 16; y++){
+           for(int x = (int)_worldPosition.x;x < (int)_worldPosition.x + 16; x++){
+             
+               short h = _mapLoader.getTreeGrid()[x][y];
+               if(h != -1){
+                   // si le h est négatif, alors il n'y a pas d'arbre à générer
+                Spatial t = treeS.clone();
+                t.setLocalTranslation(x, h, y);
+                treeCollection.add((Geometry)((Node)t).getChild("arbre"));
+               }
+           }
+       }
+       if(!treeCollection.isEmpty()){
+       GeometryBatchFactory.mergeGeometries(treeCollection, _meshTree);
+       _meshTree.updateBound();
+       }
     }
     
     private void makeMeshChunk()
@@ -278,6 +307,10 @@ public class Chunk
          _meshChunk.updateBound();
          // creation du mesh de collision
          _meshChunk.createCollisionData();
+    }
+
+    public Mesh getMeshTree() {
+        return _meshTree;
     }
     
     
