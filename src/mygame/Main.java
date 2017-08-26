@@ -162,7 +162,8 @@ public class Main extends SimpleApplication implements ActionListener{
        water.setFoamIntensity(0.2f);
        water.setWaterHeight(0.8f);
        water.setSpeed(0.4f);
-       water.setDeepWaterColor(ColorRGBA.LightGray);
+       water.setMaxAmplitude(2f);
+       water.setDeepWaterColor(new ColorRGBA(0.2f,0.5f,0.8f,1f));
        fpp.addFilter(water);
        viewPort.addProcessor(fpp);
        
