@@ -90,7 +90,7 @@ public class MovementAppState extends AbstractAppState implements RawInputListen
         super.initialize(stateManager, app);
         cam = app.getCamera();
         // parametrage caméra
-        cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 0.1f, 350f);
+        cam.setFrustumPerspective(180f, (float) cam.getWidth() / cam.getHeight(), 0.5f, 350f);
         
         bulletAppState = stateManager.getState(BulletAppState.class);
         
