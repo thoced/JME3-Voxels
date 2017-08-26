@@ -116,7 +116,7 @@ public class MapLoader implements TileBasedMap
                     // make grid
                     makeGrid3d();
                    
-                    int test = 0;
+                  
                 }
                 
                 
