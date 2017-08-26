@@ -138,7 +138,7 @@ public class Main extends SimpleApplication implements ActionListener{
         FogFilter fog = new FogFilter();
         fog.setFogColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
         fog.setFogDistance(300);
-        fog.setFogDensity(1.2f);
+        fog.setFogDensity(0.8f);
         fpp.addFilter(fog);
         viewPort.addProcessor(fpp);
        

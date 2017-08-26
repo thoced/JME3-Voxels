@@ -64,7 +64,7 @@ public class VoxelAppState extends AbstractAppState {
         _app = app;
         _bulletAppState = _app.getStateManager().getState(BulletAppState.class);
         // chargement de la map
-        _map = new MapLoader("Textures/map01/map14.png",app.getAssetManager());
+        _map = new MapLoader("Textures/map01/map15.png",app.getAssetManager());
                  
         // creation des chunks
        // _listChunks = new ArrayList<Chunk>();
