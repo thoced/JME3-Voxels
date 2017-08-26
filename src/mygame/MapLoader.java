@@ -92,18 +92,15 @@ public class MapLoader implements TileBasedMap
                 
                 System.out.println(image.getFormat());
                 
-                if(image.getFormat() == Format.Luminance8)
-                {
+                if(image.getFormat() == Format.Luminance8){
                     System.out.println("ok pour le gris");
                  
-                    for(int y = 0;y<_heightMap;y++)
-                    {
+                    for(int y = 0;y<_heightMap;y++){
                                                
-                        for(int x=0;x<_widthMap;x++)
-                        {
-                                           
-                            _heighMapGrid[(y * _heightMap) + x] = (short)(buffer.get() & 0xff); // for unsigned byte
-                          
+                        for(int x=0;x<_widthMap;x++){
+                            //_heighMapGrid[(y * _heightMap) + x] = (short)(buffer.get() & 0xff); // for unsigned byte
+                             _heighMapGrid[(y * _heightMap) + x] = (short)~(short)(buffer.get()); // for unsigned byte
+
                         }
                     }
                     
@@ -158,8 +155,6 @@ public class MapLoader implements TileBasedMap
           
         }
         
-        
-       
         
     }
     
