@@ -27,7 +27,7 @@ public class AssetLoaderAppState extends AbstractAppState {
         modelAsset = SingleModelAsset.getInstance();
         // chargement des tree
         modelAsset.getListAsset().put("tree01", app.getAssetManager().loadModel("Models/Trees/Tree01/tree01.j3o"));
-        
+       
         // désactivation de la boucle update
         this.setEnabled(false);
     }

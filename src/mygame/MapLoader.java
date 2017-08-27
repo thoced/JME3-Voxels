@@ -259,7 +259,7 @@ public class MapLoader implements TileBasedMap
        
         if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 1) // un bloc
             return true;
-       
+        
          if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 0){ 
              // deux vides l'un au dessus de l'autre ne sont pas franchissable
              ty--;
@@ -273,12 +273,18 @@ public class MapLoader implements TileBasedMap
     @Override
     public float getCost(PathFindingContext context, int tx, int ty, int tz) {
 
+        float cost = 0.1f;
+        
         if(Math.abs(context.getSourceY() - ty) > 0.5f){
             // augment le cout lorsque qu'il faut escalader
-            return 0.8f;
+            cost += 0.4f;
         }
         
-       return 0.5f;
+       // if((Math.abs(context.getSourceX() - tx) != 0) && (Math.abs(context.getSourceZ() - tz) != 0) )
+         //  cost += 0.4f;
+        
+       
+       return cost;
             
             
     }
