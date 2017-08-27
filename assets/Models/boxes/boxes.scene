@@ -1,0 +1,62 @@
+<scene formatVersion="1.0.1" export_time="1503830660.2192254" exported_by="thonon" previous_export_time="1503830617.3113196" >
+  <nodes >
+    <node name="box02" >
+      <position x="0.000000" z="-3.299901" y="0.000000" />
+      <rotation qx="0.000000" qw="1.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_x="False" friction_y="1.0" meshFile="Cube.001.mesh" velocity_min="0.0" damping_rot="0.1589999943971634" lock_trans_x="False" anisotropic_friction="False" lock_trans_y="False" damping_trans="0.02539999969303608" velocity_max="0.0" ghost="False" mass="1.0" name="Cube.001" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_rot_z="False" mass_radius="1.0" lock_trans_z="False" friction_x="1.0" friction_z="1.0" lock_rot_y="False" actor="False" />
+    </node>
+    <node name="box01" >
+      <position x="0.000000" z="4.647100" y="0.000000" />
+      <rotation qx="0.000000" qw="1.000000" qy="0.000000" qz="-0.000000" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity lock_rot_x="False" friction_y="1.0" meshFile="Cube.mesh" velocity_min="0.0" damping_rot="0.1589999943971634" lock_trans_x="False" anisotropic_friction="False" lock_trans_y="False" damping_trans="0.02539999969303608" velocity_max="0.0" ghost="False" mass="1.0" name="Cube" physics_type="STATIC" inertia_tensor="0.4000000059604645" lock_rot_z="False" mass_radius="1.0" lock_trans_z="False" friction_x="1.0" friction_z="1.0" lock_rot_y="False" actor="False" />
+    </node>
+    <node name="Lamp" >
+      <position x="4.076245" z="-1.005454" y="5.903862" />
+      <rotation qx="0.169076" qw="0.570947" qy="0.755880" qz="-0.272171" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Lamp" shadow="true" type="point" powerScale="1.0" >
+        <position x="4.076245" z="-1.005454" y="5.903862" />
+        <lightAttenuation range="5000" constant="1.0" quadratic="0.0" linear="0.03333335240683057" />
+        <colourDiffuse r="1.0" b="1.0" g="1.0" />
+        <colourSpecular r="1.0" b="1.0" g="1.0" />
+        <colourShadow r="1.0" b="1.0" g="1.0" />
+      </light>
+    </node>
+    <node name="Camera" >
+      <position x="7.481132" z="6.507640" y="5.343665" />
+      <rotation qx="0.483536" qw="0.780483" qy="0.336872" qz="-0.208704" />
+      <scale x="1.000000" z="1.000000" y="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera fov="0.5033799435163735" name="Camera" projectionType="perspective" >
+        <clipping nearPlaneDist="0.10000000149011612" near="0.10000000149011612" farPlaneDist="100.0" far="100.0" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="F:\Users\Thonon\Documents\JME Apps\Bilou\assets\Models\boxes\mat01.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+  </environment>
+</scene>
