@@ -87,7 +87,7 @@ public class VoxelAppState extends AbstractAppState {
         _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
         _mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
         _mat.setTexture("DiffuseMap",
-        _app.getAssetManager().loadTexture("Textures/Textures/grass3.jpg"));
+        _app.getAssetManager().loadTexture("Textures/Textures/textureAtlas.png"));
       //  _mat.setTexture("NormalMap", 
         //        _app.getAssetManager().loadTexture("Textures/Textures/rock_n.jpg"));
         //_mat.setFloat("Shininess", 64f);  // [0,128]
