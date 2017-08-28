@@ -6,6 +6,7 @@
 package mygame;
 
 import ModelsBloc.BBrick;
+import ModelsBloc.BEarth;
 import ModelsBloc.BGrass;
 import ModelsBloc.BlockBase;
 import com.jme3.math.Vector2f;
@@ -20,12 +21,14 @@ public class SingleUvSelect {
    
     private BBrick brick;
     private BGrass grass;
+    private BEarth earth;
    
     
     private SingleUvSelect(){
         
         brick = new BBrick();
         grass = new BGrass();
+        earth = new BEarth();
         
         
     }
@@ -33,6 +36,9 @@ public class SingleUvSelect {
     public BlockBase getUv(String nameCube){
 
         switch(nameCube){
+            
+            case "EARTH": return earth;
+            
             case "BRICK": return brick;
             
             case "GRASS": return grass;
