@@ -5,6 +5,7 @@
  */
 package mygame;
 
+import ModelsBloc.BlockBase;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -124,8 +125,19 @@ public class Chunk
             {
                 for(int y=0;y<256;y++)
                 {
-                    if(_mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x] == 1)
+
+                   short tb = _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x];
+                    
+                    if(tb != 0) // ce n'est pas un bloc vide
                     {
+                           BlockBase b = null;
+                           // obtention du type de block
+                           if(tb == 1)
+                           b = SingleUvSelect.getInstance().getUv("BRICK");
+                           else if(tb == 2){
+                           b = SingleUvSelect.getInstance().getUv("GRASS");
+                           }
+                        
                            addRelative.set(x, y, z);
                            int rx = x,ry = y,rz = z;
                            
@@ -138,10 +150,10 @@ public class Chunk
                                  vBuff.add(new Vector3f(+.5f,+.5f,-.5f).add(addRelative));
                                  vBuff.add(new Vector3f(-.5f,+.5f,-.5f).add(addRelative));
                                  // TextCoord
-                                 vText.add(uv.getUv("GRASS", 0)); 
-                                 vText.add(uv.getUv("GRASS", 1)); 
-                                 vText.add(uv.getUv("GRASS", 2)); 
-                                 vText.add(uv.getUv("GRASS", 3)); 
+                                 vText.add(b.getTop()[0]); 
+                                 vText.add(b.getTop()[1]); 
+                                 vText.add(b.getTop()[2]);  
+                                 vText.add(b.getTop()[3]);  
                                  // Normal
                                  vNorm.add(new Vector3f(0,1,0));
                                  vNorm.add(new Vector3f(0,1,0));
@@ -162,10 +174,10 @@ public class Chunk
                                 vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
                                 // TextCoord
-                                 vText.add(uv.getUv("BRICK", 0)); 
-                                 vText.add(uv.getUv("BRICK", 1)); 
-                                 vText.add(uv.getUv("BRICK", 2)); 
-                                 vText.add(uv.getUv("BRICK", 3)); 
+                                 vText.add(b.getDown()[0]); 
+                                 vText.add(b.getDown()[1]); 
+                                 vText.add(b.getDown()[2]);  
+                                 vText.add(b.getDown()[3]); 
                                  // Normal
                                 vNorm.add(new Vector3f(0,-1,0));
                                 vNorm.add(new Vector3f(0,-1,0));
@@ -185,10 +197,10 @@ public class Chunk
                                  vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
                                  vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
                                  // TextCoord
-                                 vText.add(uv.getUv("BRICK", 0)); 
-                                 vText.add(uv.getUv("BRICK", 1)); 
-                                 vText.add(uv.getUv("BRICK", 2)); 
-                                 vText.add(uv.getUv("BRICK", 3)); 
+                                 vText.add(b.getRight()[0]); 
+                                 vText.add(b.getRight()[1]); 
+                                 vText.add(b.getRight()[2]);  
+                                 vText.add(b.getRight()[3]); 
                                   // Normal
                                  vNorm.add(new Vector3f(1,0,0));
                                  vNorm.add(new Vector3f(1,0,0));
@@ -208,10 +220,10 @@ public class Chunk
                                 vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
                                 vBuff.add(new Vector3f(-.5f,-.5f,+.5f).add(addRelative));
                                 // TextCoord
-                                 vText.add(uv.getUv("BRICK", 0)); 
-                                 vText.add(uv.getUv("BRICK", 1)); 
-                                 vText.add(uv.getUv("BRICK", 2)); 
-                                 vText.add(uv.getUv("BRICK", 3)); 
+                                 vText.add(b.getLeft()[0]); 
+                                 vText.add(b.getLeft()[1]); 
+                                 vText.add(b.getLeft()[2]);  
+                                 vText.add(b.getLeft()[3]); 
                                  // Normal
                                 vNorm.add(new Vector3f(-1,0,0));
                                 vNorm.add(new Vector3f(-1,0,0));
@@ -231,10 +243,10 @@ public class Chunk
                                 vBuff.add(new Vector3f(+.5f,-.5f,-.5f).add(addRelative));
                                 vBuff.add(new Vector3f(-.5f,-.5f,-.5f).add(addRelative));
                                 // TextCoord
-                                 vText.add(uv.getUv("BRICK", 0)); 
-                                 vText.add(uv.getUv("BRICK", 1)); 
-                                 vText.add(uv.getUv("BRICK", 2)); 
-                                 vText.add(uv.getUv("BRICK", 3)); 
+                                 vText.add(b.getFront()[0]); 
+                                 vText.add(b.getFront()[1]); 
+                                 vText.add(b.getFront()[2]);  
+                                 vText.add(b.getFront()[3]); 
                                  // Normal
                                 vNorm.add(new Vector3f(0,0,-1));
                                 vNorm.add(new Vector3f(0,0,-1));
@@ -254,11 +266,11 @@ public class Chunk
                                 vBuff.add(new Vector3f(-.5f,-.5f,+.5f).add(addRelative));
                                 vBuff.add(new Vector3f(+.5f,-.5f,+.5f).add(addRelative));
                                 // TextCoord
-                                 vText.add(uv.getUv("BRICK", 0)); 
-                                 vText.add(uv.getUv("BRICK", 1)); 
-                                 vText.add(uv.getUv("BRICK", 2)); 
-                                 vText.add(uv.getUv("BRICK", 3)); 
-                                 // Normal
+                                 vText.add(b.getBehind()[0]); 
+                                 vText.add(b.getBehind()[1]); 
+                                 vText.add(b.getBehind()[2]);  
+                                 vText.add(b.getBehind()[3]); 
+                                 // getBehind
                                 vNorm.add(new Vector3f(0,0,1));
                                 vNorm.add(new Vector3f(0,0,1));
                                 vNorm.add(new Vector3f(0,0,1));
