@@ -133,9 +133,11 @@ public class Chunk
                            BlockBase b = null;
                            // obtention du type de block
                            if(tb == 1)
-                           b = SingleUvSelect.getInstance().getUv("BRICK");
+                           b = SingleUvSelect.getInstance().getUv("EARTH");
                            else if(tb == 2){
                            b = SingleUvSelect.getInstance().getUv("GRASS");
+                           }else if(tb == 3){
+                           b = SingleUvSelect.getInstance().getUv("BRICK");
                            }
                         
                            addRelative.set(x, y, z);
