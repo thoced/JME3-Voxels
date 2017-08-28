@@ -6,6 +6,7 @@
 package ModelsBloc;
 
 import com.jme3.math.Vector2f;
+import com.jme3.texture.TextureArray;
 import mygame.SingleUvSelect;
 
 /**
@@ -17,6 +18,9 @@ public abstract class BlockBase {
     protected Vector2f[] UvGrass = new Vector2f[4];
     protected Vector2f[] UvBrick = new Vector2f[4];
     protected Vector2f[] UvBrackWithGrass = new Vector2f[4];
+    protected Vector2f[] UvEarth = new Vector2f[4];
+    protected Vector2f[] UvEarthWithGrass = new Vector2f[4];
+    
     
  
     public BlockBase(){
@@ -32,11 +36,23 @@ public abstract class BlockBase {
         UvBrick[2] = new Vector2f(0.75f,0.25f);
         UvBrick[3] = new Vector2f(0.50f,0.25f);
         
+        //Earth
+        UvEarth[0] = new Vector2f(0.5f,0.25f);
+        UvEarth[1] = new Vector2f(0.75f,0.25f);
+        UvEarth[2] = new Vector2f(0.75f,0.50f);
+        UvEarth[3] = new Vector2f(0.50f,0.50f);
+        
          // BRICK + GRASS
         UvBrackWithGrass[0] = new Vector2f(0.25f,0f);
         UvBrackWithGrass[1] = new Vector2f(0.50f,0f);
         UvBrackWithGrass[2] = new Vector2f(0.50f,0.25f);
         UvBrackWithGrass[3] = new Vector2f(0.25f,0.25f);
+        
+          // earth + GRASS
+        UvEarthWithGrass[0] = new Vector2f(0.25f,0.25f);
+        UvEarthWithGrass[1] = new Vector2f(0.50f,0.25f);
+        UvEarthWithGrass[2] = new Vector2f(0.50f,0.50f);
+        UvEarthWithGrass[3] = new Vector2f(0.25f,0.50f);
     }
     public abstract Vector2f[] getTop();
     public abstract Vector2f[] getDown();
