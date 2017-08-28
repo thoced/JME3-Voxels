@@ -1,6 +1,7 @@
 package mygame;
 
 import appState.AssetLoaderAppState;
+import appState.CameraScrollAppState;
 import appState.FinderAppState;
 import appState.MovementAppState;
 import com.jme3.app.SimpleApplication;
@@ -29,15 +30,18 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
 import com.jme3.post.filters.LightScatteringFilter;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.shadow.CompareMode;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
@@ -62,6 +66,7 @@ public class Main extends SimpleApplication implements ActionListener{
     private VoxelAppState _voxelAppState;
     private FinderAppState _finderAppState;
     private MovementAppState _movementAppState;
+    private CameraScrollAppState _cameraAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -70,7 +75,7 @@ public class Main extends SimpleApplication implements ActionListener{
     
     private Ray _rayView;
     private CollisionResults _viewCollisionResults;
-    private Geometry _mark;
+    private Node _mark;
     private Vector3f _offsetVoxel;
     
     private Spatial bon;
@@ -85,7 +90,7 @@ public class Main extends SimpleApplication implements ActionListener{
        
         // instance
         this.getFlyByCamera().setMoveSpeed(32.0f);
-        this.getFlyByCamera().setEnabled(true);
+        this.getFlyByCamera().setEnabled(false);
         // distance de vue
         this.getCamera().setFrustumFar(312);
         this.guiViewPort.setBackgroundColor(new ColorRGBA(0.96f, 0.99f, 0.99f, 1.0f));
@@ -108,6 +113,10 @@ public class Main extends SimpleApplication implements ActionListener{
        // creation du MovementAppState
        _movementAppState = new MovementAppState();
        //this.stateManager.attach(_movementAppState);
+       
+       // creation du CameraScrollAppState
+       _cameraAppState = new CameraScrollAppState();
+       this.stateManager.attach(_cameraAppState);
             
        // Light
        AmbientLight ambientLight = new AmbientLight();
@@ -144,16 +153,20 @@ public class Main extends SimpleApplication implements ActionListener{
         fog.setFogDensity(0.4f);
         fpp.addFilter(fog);
         viewPort.addProcessor(fpp);
-       
+
        //shadow
        final int SHADOWMAP_SIZE=4096;
         DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, SHADOWMAP_SIZE, 3);
         dlsf.setLight(directionalLight);
         dlsf.setEdgeFilteringMode(EdgeFilteringMode.Nearest);
         dlsf.setEnabled(true);
+        dlsf.setShadowCompareMode(CompareMode.Hardware);
         fpp.addFilter(dlsf);
-        viewPort.addProcessor(fpp);
+       viewPort.addProcessor(fpp);
+       
+      
         
+           
        // water see
        Vector3f lightDir = new Vector3f(-4.9f, -1.3f, 5.9f);
       // fpp = new FilterPostProcessor(assetManager);
@@ -207,11 +220,17 @@ public class Main extends SimpleApplication implements ActionListener{
      
      private void initMark()
      {
-        Sphere sphere = new Sphere(30, 30, 0.2f);
+       /* Sphere sphere = new Sphere(30, 30, 0.2f);
         _mark = new Geometry("BOOM!", sphere);
         Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mark_mat.setColor("Color", ColorRGBA.Red);
-        _mark.setMaterial(mark_mat);
+        _mark.setMaterial(mark_mat);*/
+        _mark = new Node();
+         Spatial select = this.getAssetManager().loadModel("Models/Utils/Select/select.j3o");
+         select.setLocalTranslation(0,0.5f,0);
+         _mark.attachChild(select);
+         _mark.setShadowMode(RenderQueue.ShadowMode.Receive);
+         
         rootNode.attachChild(_mark);
        
      }
@@ -219,8 +238,8 @@ public class Main extends SimpleApplication implements ActionListener{
     @Override
     public void simpleUpdate(float tpf)
     {
-          _rayView.setOrigin(this.getCamera().getLocation());
-          _rayView.setDirection(this.getCamera().getDirection());
+          _rayView.setOrigin(_cameraAppState.getCam().getLocation());
+          _rayView.setDirection(_cameraAppState.getDirectionCursor());
           
           _viewCollisionResults.clear();
           
@@ -228,8 +247,7 @@ public class Main extends SimpleApplication implements ActionListener{
           if(_viewCollisionResults.size() > 0)
           {
              CollisionResult result =  _viewCollisionResults.getClosestCollision();
-             _mark.setLocalTranslation(result.getContactPoint());
-             
+             _mark.setLocalTranslation(result.getContactPoint()); 
           }
               
    
@@ -249,7 +267,9 @@ public class Main extends SimpleApplication implements ActionListener{
                 // creation du collisionresult
                 CollisionResults results = new CollisionResults();
                 // creation du rayon
-                Ray r = new Ray(this.getCamera().getLocation(),this.getCamera().getDirection());
+
+                
+                Ray r = new Ray(_cameraAppState.getCam().getLocation(),_cameraAppState.getDirectionCursor());
                 _voxelAppState.getNodeVoxelChunk().collideWith(r, results);
 
                 if(results.size() > 0)
