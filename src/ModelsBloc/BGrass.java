@@ -25,27 +25,27 @@ public class BGrass extends BlockBase {
 
     @Override
     public Vector2f[] getDown() {
-        return UvBrackWithGrass;
+        return this.UvEarthWithGrass;
     }
 
     @Override
     public Vector2f[] getLeft() {
-        return UvBrackWithGrass;
+         return this.UvEarthWithGrass;
     }
 
     @Override
     public Vector2f[] getRight() {
-         return UvBrackWithGrass;
+          return this.UvEarthWithGrass;
     }
 
     @Override
     public Vector2f[] getFront() {
-         return UvBrackWithGrass;
+          return this.UvEarthWithGrass;
     }
 
     @Override
     public Vector2f[] getBehind() {
-         return UvBrackWithGrass;
+          return this.UvEarthWithGrass;
     }
     
 }
