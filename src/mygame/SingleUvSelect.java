@@ -34,12 +34,14 @@ public class SingleUvSelect {
         
     }
     
-    public Vector2f getUv(String name,int point){
+    public Vector2f getUv(String nameCube,int point){
         
         if((point < 0) || (point > 3))
             return UvGrass[0];
         
-        switch(name){
+        
+        
+        switch(nameCube){
             case "GRASS": return UvGrass[point];
             
             case "BRICK": return UvBrick[point];
