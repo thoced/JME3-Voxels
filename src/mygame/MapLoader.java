@@ -187,10 +187,8 @@ public class MapLoader implements TileBasedMap
                 // pour chaque position y on créer le nombre de voxel nécessaire
                 short value = _heighMapGrid[(y * _heightMap) + x];
                 // création de la liste de hauteur de voxels
+                prepareGrid(value, x,  y); 
                 
-               // System.out.println("val X "+ x + "val y " + y + "value:  " + (int)value);
-               // _listVoxels.add(new Voxel(new Vector3f(lx,ly,value),TypeVoxel.BLOC01));
-                prepareGrid(value, x,  y);
                
             }
            
@@ -201,11 +199,19 @@ public class MapLoader implements TileBasedMap
     
     private void prepareGrid(short value,int x, int z)
     {
+        if(value == 0)
+            return;
+        // 1 = block
+        // 2 = block + grass
         for(short y=0;y < value;y++)
         { 
            _gridMap3d[(y*_zWidth)+(z * _heightMap)+x] = 1;
           
         }
+        // block grass
+        value--;
+         _gridMap3d[(value*_zWidth)+(z * _heightMap)+x] = 2;
+         
         
         
     }
@@ -257,7 +263,7 @@ public class MapLoader implements TileBasedMap
     @Override
     public boolean blocked(PathFindingContext context, int tx, int ty, int tz) {
        
-        if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 1) // un bloc
+        if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] != 0) // un bloc
             return true;
         
          if(_gridMap3d[(ty*_zWidth)+(tz * _heightMap)+tx] == 0){ 
@@ -273,11 +279,11 @@ public class MapLoader implements TileBasedMap
     @Override
     public float getCost(PathFindingContext context, int tx, int ty, int tz) {
 
-        float cost = 0.1f;
+        float cost = 1f;
         
         if(Math.abs(context.getSourceY() - ty) > 0.5f){
             // augment le cout lorsque qu'il faut escalader
-            cost += 0.4f;
+            cost += 1f;
         }
         
        // if((Math.abs(context.getSourceX() - tx) != 0) && (Math.abs(context.getSourceZ() - tz) != 0) )
