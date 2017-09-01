@@ -14,7 +14,9 @@ import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -60,7 +62,7 @@ import jme3tools.optimize.GeometryBatchFactory;
  * Move your Logic into AppStates or Controls
  * @author normenhansen
  */
-public class Main extends SimpleApplication implements ActionListener{
+public class Main extends SimpleApplication implements ActionListener,AnalogListener{
 
     private BulletAppState _bulletAppState;
     private VoxelAppState _voxelAppState;
@@ -194,6 +196,11 @@ public class Main extends SimpleApplication implements ActionListener{
     
      private void initKeys()
      {
+        // input du bouton centrale de la souris
+        inputManager.addMapping("ZOOM_CAMERA_IN", new MouseAxisTrigger(MouseInput.AXIS_WHEEL,false));
+        inputManager.addMapping("ZOOM_CAMERA_OUT", new MouseAxisTrigger(MouseInput.AXIS_WHEEL,true));
+        
+        
                  
         inputManager.addMapping("ADD_VOXEL",
           new KeyTrigger(KeyInput.KEY_SPACE),
@@ -211,11 +218,13 @@ public class Main extends SimpleApplication implements ActionListener{
           inputManager.addMapping("BON", 
                 new KeyTrigger(KeyInput.KEY_B));
         
+        inputManager.addListener(this, "ZOOM_CAMERA_IN");
+        inputManager.addListener(this, "ZOOM_CAMERA_OUT");
         inputManager.addListener(this, "ADD_VOXEL");
-        inputManager.addListener(this, "SUB_VOXEL");
-         inputManager.addListener(this, "START_PATH");
-          inputManager.addListener(this, "GOAL_PATH");
-           inputManager.addListener(this, "BON");
+      //  inputManager.addListener(this, "SUB_VOXEL");
+        inputManager.addListener(this, "START_PATH");
+        inputManager.addListener(this, "GOAL_PATH");
+        inputManager.addListener(this, "BON");
      }
      
      private void initMark()
@@ -227,7 +236,7 @@ public class Main extends SimpleApplication implements ActionListener{
         _mark.setMaterial(mark_mat);*/
         _mark = new Node();
          Spatial select = this.getAssetManager().loadModel("Models/Utils/Select/select.j3o");
-         select.setLocalTranslation(0,0.5f,0);
+         select.setLocalTranslation(0,0.05f,0);
          _mark.attachChild(select);
          _mark.setShadowMode(RenderQueue.ShadowMode.Receive);
          
@@ -261,6 +270,8 @@ public class Main extends SimpleApplication implements ActionListener{
     @Override
     public void onAction(String name, boolean isPressed, float tpf) 
     {
+       
+        
         if(isPressed)
         {
             
@@ -276,6 +287,7 @@ public class Main extends SimpleApplication implements ActionListener{
                 {
                     // il y a une collision
                     CollisionResult closest = results.getClosestCollision();
+                    
                     
                     
                     if(name.equals("ADD_VOXEL"))
@@ -315,5 +327,16 @@ public class Main extends SimpleApplication implements ActionListener{
                 }
  
         }
+    }
+
+    @Override
+    public void onAnalog(String name, float f, float f1) {
+        
+        System.out.println(f);
+        
+        if(name.equals("ZOOM_CAMERA_IN"))
+            _cameraAppState.setZoom(f); 
+          if(name.equals("ZOOM_CAMERA_OUT"))
+            _cameraAppState.setZoom(-f); 
     }
 }
