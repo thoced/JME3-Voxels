@@ -1,7 +1,7 @@
 Material MyMaterial : Common/MatDefs/Misc/Unshaded.j3md {
     MaterialParameters {
         BackfaceShadows : true
-        ColorMap : Flip Textures/Utils/select.png
+        ColorMap : Flip Models/Utils/Select/cursor_rotation.png
     }
     AdditionalRenderState {
       PointSprite On

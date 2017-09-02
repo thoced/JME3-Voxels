@@ -12,9 +12,11 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.FastMath;
@@ -23,7 +25,10 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import controllers.bonController;
 import mygame.VoxelAppState;
 
 /**
@@ -63,6 +68,13 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
     
     private float rotateValue = 0f; 
     private float rotateChoose = 0f;
+    
+    private Vector3f _offsetVoxel;
+    
+    private GuiAppState guiAppState;
+    
+    // Node relatif au cursor de rotation
+    Node nodeCursorRotation;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -71,7 +83,10 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         this.cam = app.getCamera();
         this.input = app.getInputManager();
         
+        // réception des appstate
         voxel = stateManager.getState(VoxelAppState.class);
+        guiAppState = stateManager.getState(GuiAppState.class);
+        
         results = new CollisionResults();
         
         nodeCamera = new Node();
@@ -84,19 +99,66 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         this.app.getRootNode().attachChild(centerViewNodeCamera);
         
         // désactivation du curseur
-        input.setCursorVisible(false);
+        input.setCursorVisible(true);
         input.addListener(this, "MOUSE_CLICK_RIGHT");
         input.addListener(this, "MOUSE_ROTATE_RIGHT");
         input.addListener(this, "MOUSE_ROTATE_LEFT");
+        
         input.addMapping("MOUSE_ROTATE_RIGHT", new MouseAxisTrigger(MouseInput.AXIS_X,true));
         input.addMapping("MOUSE_ROTATE_LEFT", new MouseAxisTrigger(MouseInput.AXIS_X,false));
         input.addMapping("MOUSE_CLICK_RIGHT", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
         // centre screen
         centerScreen = new Vector2f(cam.getWidth()/2f,cam.getHeight()/2);
-        
+        // offset
+         _offsetVoxel = new Vector3f(0.5f,0.5f,0.5f);
+        // init key
+        initKeys();
+        // init mark
+        initMark();
       
     } 
+    
+    private void initMark(){
+    
+        nodeCursorRotation = new Node();
+        Spatial select = app.getAssetManager().loadModel("Models/Utils/Select/select.j3o");
+        select.setLocalTranslation(0,0.05f,0);
+        nodeCursorRotation.attachChild(select);
+        nodeCursorRotation.setShadowMode(RenderQueue.ShadowMode.Receive);
+        nodeCursorRotation.setCullHint(Spatial.CullHint.Always);
+        app.getRootNode().attachChild(nodeCursorRotation);
+       
+     }
+    
+     private void initKeys(){
+        // input du bouton centrale de la souris
+        input.addMapping("ZOOM_CAMERA_IN", new MouseAxisTrigger(MouseInput.AXIS_WHEEL,false));
+        input.addMapping("ZOOM_CAMERA_OUT", new MouseAxisTrigger(MouseInput.AXIS_WHEEL,true));
+        
+ 
+        input.addMapping("CLIC_LEFT",
+          new KeyTrigger(KeyInput.KEY_SPACE),
+          new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); 
+        
+              
+         input.addMapping("START_PATH", 
+                new KeyTrigger(KeyInput.KEY_1));
+         
+         input.addMapping("GOAL_PATH", 
+                new KeyTrigger(KeyInput.KEY_2));
+         
+          input.addMapping("BON", 
+                new KeyTrigger(KeyInput.KEY_B));
+        
+        input.addListener(this, "ZOOM_CAMERA_IN");
+        input.addListener(this, "ZOOM_CAMERA_OUT");
+        input.addListener(this, "CLIC_LEFT");
+      //  inputManager.addListener(this, "SUB_VOXEL");
+        input.addListener(this, "START_PATH");
+        input.addListener(this, "GOAL_PATH");
+        input.addListener(this, "BON");
+     }
 
     public float getZoom() {
         return zoom;
@@ -133,25 +195,20 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
        float distance = posCursor.distance(centerScreen);
        Vector2f diff = (centerScreen.subtract(posCursor)).normalize();
     
-       // lancer de rayon de la caméra vers le node center pour obtenir la hauteur du node center
-       
-       
-         
-           // creation du vecteur NodeCam to CenterNodeCam
-           Vector3f vCamDir = cam.getDirection();
-           // produit scalaire pour obtenir le vecteur right
-           Vector3f right = Vector3f.UNIT_Y.cross(vCamDir);
-           right.normalizeLocal().multLocal(speed * tpf);
+      // creation du vecteur NodeCam to CenterNodeCam
+       Vector3f vCamDir = cam.getDirection();
+      // produit scalaire pour obtenir le vecteur right
+       Vector3f right = Vector3f.UNIT_Y.cross(vCamDir);
+       right.normalizeLocal().multLocal(speed * tpf);
 
-          // produit scalaire pour obtenir le vecteur en avant
-          Vector3f dir = Vector3f.UNIT_Y.cross(right);
-          dir.normalizeLocal().multLocal(speed * tpf);
+      // produit scalaire pour obtenir le vecteur en avant
+       Vector3f dir = Vector3f.UNIT_Y.cross(right);
+       dir.normalizeLocal().multLocal(speed * tpf);
           
           
           // calcul de la hauteur de la caméra
           results.clear();
           Vector3f posH = centerViewNodeCamera.getWorldTranslation();
-          Vector3f vStart = posH.clone().add(new Vector3f(0,1000,0));
           Ray r = new Ray(nodeCamera.getWorldTranslation(),cam.getDirection());
           voxel.getNodeVoxelChunk().collideWith(r, results);
           if(results.size() > 0){
@@ -160,19 +217,24 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
               posH.y = end.y;
           }
           
-          // translation
-        if(posCursor.x > cam.getWidth() - 12)
-            posNew.addLocal(right.negate());
-        else  if(posCursor.x < 12)
-            posNew.addLocal(right);
-        else if(posCursor.y < 12)
-            posNew.addLocal(dir);
-        else if(posCursor.y > cam.getHeight() - 12)
-            posNew.addLocal(dir.negate());
-              
-        Vector3f v = centerViewNodeCamera.getWorldTranslation();
-        v.interpolateLocal(posNew, tpf);
-        centerViewNodeCamera.setLocalTranslation(v);
+           // affichage du cursor de rotation
+       if(activeRotation){
+           nodeCursorRotation.setLocalTranslation(centerViewNodeCamera.getWorldTranslation());
+       }else{
+            // translation
+          if(posCursor.x > cam.getWidth() - 12)
+              posNew.addLocal(right.negate());
+          else  if(posCursor.x < 12)
+              posNew.addLocal(right);
+          else if(posCursor.y < 12)
+              posNew.addLocal(dir);
+          else if(posCursor.y > cam.getHeight() - 12)
+              posNew.addLocal(dir.negate());
+
+          Vector3f v = centerViewNodeCamera.getWorldTranslation();
+          v.interpolateLocal(posNew, tpf);
+          centerViewNodeCamera.setLocalTranslation(v);
+       }
            
         // rotation
         Quaternion q = centerViewNodeCamera.getWorldRotation();
@@ -186,7 +248,7 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
        this.cam.setLocation(nodeCamera.getWorldTranslation());
        this.cam.lookAt(centerViewNodeCamera.getWorldTranslation(), Vector3f.UNIT_Y);
        
-       
+      
        
     }
     
@@ -219,11 +281,62 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
     }
 
     @Override
-    public void onAction(String name, boolean bln, float f) {
+    public void onAction(String name, boolean isPressed, float f) {
        
         if(name.equals("MOUSE_CLICK_RIGHT")){
-            activeRotation = bln;
+            activeRotation = isPressed;
+            if(activeRotation)
+                 nodeCursorRotation.setCullHint(Spatial.CullHint.Never);
+            else
+                 nodeCursorRotation.setCullHint(Spatial.CullHint.Always);
         }
+        
+         if(isPressed)
+        {
+                // creation du collisionresult
+                CollisionResults results = new CollisionResults();
+                // creation du rayon
+
+                Ray r = new Ray(cam.getLocation(),getDirectionCursor());
+                voxel.getNodeVoxelChunk().collideWith(r, results);
+
+                if(results.size() > 0)
+                {
+                    // il y a une collision
+                    CollisionResult closest = results.getClosestCollision();
+                    
+                    if(name.equals("CLIC_LEFT")){
+                    
+                        if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADD)
+                        {
+                            // on récupère lecontact point
+                            Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                            voxel.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
+                        }
+                        else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.SUB)
+                        {
+                            // position du voxel a supprimer
+                              Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
+                             voxel.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
+                        }
+                    }
+                    
+                     /* if(name.equals("START_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setStartPoint(voxelPos);
+                      }
+                      
+                      if(name.equals("GOAL_PATH")){
+                          Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                          _finderAppState.setGoalPoint(voxelPos);
+                      }*/
+                      
+                      
+                        
+                }
+ 
+        }
+        
         
     }
 
