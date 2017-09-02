@@ -170,9 +170,7 @@ public class Main extends SimpleApplication implements AnalogListener{
         fpp.addFilter(dlsf);
        viewPort.addProcessor(fpp);
        
-      
-        
-           
+  
        // water see
        Vector3f lightDir = new Vector3f(-4.9f, -1.3f, 5.9f);
       // fpp = new FilterPostProcessor(assetManager);
@@ -182,7 +180,7 @@ public class Main extends SimpleApplication implements AnalogListener{
        water.setWaterHeight(0.8f);
        water.setSpeed(0.4f);
        water.setMaxAmplitude(2f);
-       water.setDeepWaterColor(new ColorRGBA(0.2f,0.5f,0.8f,1f));
+       water.setDeepWaterColor(new ColorRGBA(0.0f,0.5f,1f,1f));
        fpp.addFilter(water);
        viewPort.addProcessor(fpp);
        
