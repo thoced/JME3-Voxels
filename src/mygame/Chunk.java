@@ -125,20 +125,26 @@ public class Chunk
             {
                 for(int y=0;y<256;y++)
                 {
-
+                    // type de bloc
                    short tb = _mapLoader.getGridMap3d()[(y*_mapLoader.getzWidth())+(z * height)+x];
                     
                     if(tb != 0) // ce n'est pas un bloc vide
                     {
                            BlockBase b = null;
-                           // obtention du type de block
-                           if(tb == 1)
-                           b = SingleUvSelect.getInstance().getUv("EARTH");
-                           else if(tb == 2){
-                           b = SingleUvSelect.getInstance().getUv("GRASS");
-                           }else if(tb == 3){
-                           b = SingleUvSelect.getInstance().getUv("BRICK");
-                           }
+                       // obtention du type de block
+                       switch (tb) {
+                           case 1:
+                               b = SingleUvSelect.getInstance().getUv("EARTH");
+                               break;
+                           case 2:
+                               b = SingleUvSelect.getInstance().getUv("GRASS");
+                               break;
+                           case 3:
+                               b = SingleUvSelect.getInstance().getUv("BRICK");
+                               break;
+                           default:
+                               break;
+                       }
                         
                            addRelative.set(x, y, z);
                            int rx = x,ry = y,rz = z;

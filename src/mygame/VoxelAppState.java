@@ -80,7 +80,7 @@ public class VoxelAppState extends AbstractAppState  {
          
     }
     
-   
+
     
     private void manageChunk()
     {
