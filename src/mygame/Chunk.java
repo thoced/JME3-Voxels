@@ -6,6 +6,7 @@
 package mygame;
 
 import ModelsBloc.BlockBase;
+import ModelsData.SingleGlobal;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -60,6 +61,8 @@ public class Chunk
         _meshChunk = new Mesh();
         // instance du Mesh Tree
         _meshTree  = new Mesh();
+        // spécification au gpu que le mesh risque d'être modifié régulièrement
+        _meshChunk.setDynamic();
         
         // construction du MeshChunk
         makeMeshChunk();
@@ -329,6 +332,8 @@ public class Chunk
          _meshChunk.updateBound();
          // creation du mesh de collision
          _meshChunk.createCollisionData();
+     
+         
     }
 
     public Mesh getMeshTree() {
