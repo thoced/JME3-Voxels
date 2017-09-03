@@ -242,13 +242,21 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         nQ.fromAngleAxis(rotateChoose, Vector3f.UNIT_Y);
         q.slerp(nQ, tpf * speedRotateLerp);
         centerViewNodeCamera.setLocalRotation(q);
+        
+        // zoom
+        if(zoom != 0){
+            if(zoom > 0){
+                nodeCamera.setLocalTranslation(nodeCamera.getLocalTranslation().add(Vector3f.UNIT_Y.negate()));
+            }else if(zoom < 0){
+                nodeCamera.setLocalTranslation(nodeCamera.getLocalTranslation().add(Vector3f.UNIT_Y));
+            }
+        }
+        zoom = 0f;
             
 
        // la camera doit suivre le nodeCamera
        this.cam.setLocation(nodeCamera.getWorldTranslation());
        this.cam.lookAt(centerViewNodeCamera.getWorldTranslation(), Vector3f.UNIT_Y);
-       
-      
        
     }
     
@@ -278,6 +286,16 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
 
             }
         }
+        
+        // gestion ZOOM
+        if(name.equals("ZOOM_CAMERA_IN")){
+            zoom += f;
+        }
+        else if(name.equals("ZOOM_CAMERA_OUT")){
+            zoom -= f;
+        }
+        
+        
     }
 
     @Override
@@ -293,10 +311,9 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         
          if(isPressed)
         {
-                // creation du collisionresult
-                CollisionResults results = new CollisionResults();
+                // clear du results
+                results.clear();
                 // creation du rayon
-
                 Ray r = new Ray(cam.getLocation(),getDirectionCursor());
                 voxel.getNodeVoxelChunk().collideWith(r, results);
 
