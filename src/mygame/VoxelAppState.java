@@ -13,10 +13,12 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -86,7 +88,7 @@ public class VoxelAppState extends AbstractAppState  {
     {
          // Création d'un material
         _mat = new Material(_app.getAssetManager(),"Common/MatDefs/Light/Lighting.j3md");
-        _mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
+        //_mat.setColor("Diffuse", new ColorRGBA(128,128,128,255));
         _mat.setTexture("DiffuseMap",
         _app.getAssetManager().loadTexture("Textures/Textures/textureAtlas.png"));
       //  _mat.setTexture("NormalMap", 
@@ -241,6 +243,31 @@ public class VoxelAppState extends AbstractAppState  {
             }
         }
     }
+    
+   
+    public Vector3f getContactSinceDirection(Vector3f sourcePos,Vector3f dir){
+        CollisionResults results = new CollisionResults();
+        Ray r = new Ray(sourcePos,dir);
+        _nodeVoxelChunk.collideWith(r, results);
+        
+        if(results.size() > 0){
+            return results.getClosestCollision().getContactPoint();
+        }
+        else
+            return null;
+    }
+    
+    public Vector3f getCenterBlocSinceDirection(Vector3f sourcePos,Vector3f dir){
+        Vector3f p = getContactSinceDirection(sourcePos,dir);
+        // on positionne la position au centre d'un cube qui fait 1*1*1
+        double x = Math.ceil(p.x);
+        double z = Math.ceil(p.z);
+       // x-=0.5f;
+       // z-=0.5f;
+        return new Vector3f((float)x,p.y,(float)z);
+        
+    }
+            
 
     public Node getNodeVoxelChunk() {
         return _nodeVoxelChunk;
