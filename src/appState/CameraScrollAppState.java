@@ -37,7 +37,7 @@ import mygame.VoxelAppState;
  */
 public class CameraScrollAppState extends AbstractAppState implements  ActionListener,AnalogListener {
        
-    private SimpleApplication app;
+   // private SimpleApplication app;
 
     private Camera cam;
     
@@ -237,7 +237,7 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
        }
            
         // rotation
-        Quaternion q = centerViewNodeCamera.getWorldRotation();
+        Quaternion q = centerViewNodeCamera.getWorldRotation.clone();
         Quaternion nQ = new Quaternion();
         nQ.fromAngleAxis(rotateChoose, Vector3f.UNIT_Y);
         q.slerp(nQ, tpf * speedRotateLerp);

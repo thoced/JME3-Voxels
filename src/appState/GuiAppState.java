@@ -5,6 +5,7 @@
  */
 package appState;
 
+import ModelsData.SingleGlobal;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -97,7 +98,7 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
 
         Element niftyElement3 = nifty.getCurrentScreen().findElementById("buttonAddBon");
         niftyElement3.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddBon()", this));
-
+        
         // ajout du niftyDisplay au Processeur GuiViewPort  
         app.getGuiViewPort().addProcessor(niftyDisplay);
 
@@ -185,33 +186,36 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
     
     public void buttonAdd(){
         typeAction = typeButtonAction.ADD;
-        System.out.println("ADD");
+        SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.BUILD);
     }
     
     public void buttonSub(){
         typeAction = typeButtonAction.SUB;
-         System.out.println("SUB");
+        SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.BUILD);
     }
     
     public void buttonAddBon(){
         typeAction = typeButtonAction.ADDBON;
-        System.out.println("ADD BON");
+         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.SELECT);                                                                              N?????????????????????????????
     }
     
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
         
-        if(name.equals("CLIC_SELECTION")){
-            if(isPressed){
-                // début de crétion du rectangle de sélection
-                m_isSelection = true;
-                m_geoSelection.setCullHint(Spatial.CullHint.Never);
-                m_VectorSelectionStart = this.input.getCursorPosition().clone();
-            }
-            else{
-                // fin du rectangle
-                m_isSelection = false;
-                m_geoSelection.setCullHint(Spatial.CullHint.Always);
+        if(SingleGlobal.getInstance().getGameMode() == SingleGlobal.Mode.SELECT){
+        
+            if(name.equals("CLIC_SELECTION")){
+                if(isPressed){
+                    // début de crétion du rectangle de sélection
+                    m_isSelection = true;
+                    m_geoSelection.setCullHint(Spatial.CullHint.Never);
+                    m_VectorSelectionStart = this.input.getCursorPosition().clone();
+                }
+                else{
+                    // fin du rectangle
+                    m_isSelection = false;
+                    m_geoSelection.setCullHint(Spatial.CullHint.Always);
+                }
             }
         }
     }

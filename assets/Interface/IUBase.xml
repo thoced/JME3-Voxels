@@ -5,9 +5,9 @@
     <screen id="start" childLayout="center" controller="appState.GuiAppState">
         <layer id="GLayer0" childLayout="center" valign="" align="">
             <panel id="GPanel1" childLayout="center" backgroundColor="#AE5005" width="185px" x="538px" y="238px" style="nifty-panel-simple" valign="bottom" align="right" height="356px">
-                <control name="button" id="buttonSub" childLayout="center" width="100px" x="10" y="134" label="Sub" align="left" height="50px"/>
-                <control name="button" id="buttonAdd" childLayout="center" width="100px" x="19" y="24" valign="top" label="Add" align="left" height="50px"/>
-                <control name="button" id="buttonAddBon" childLayout="center" x="-1px" width="100px" y="-1px" valign="bottom" label="ADD BON" align="left" height="50px"/>
+                <control name="button" id="buttonSub" childLayout="center" renderOrder="1" width="100px" x="10" y="134" label="Sub" align="left" height="50px"/>
+                <control name="button" id="buttonAdd" childLayout="center" renderOrder="2" width="100px" x="19" y="24" valign="top" label="Add" align="left" height="50px"/>
+                <control name="button" id="buttonAddBon" childLayout="center" renderOrder="0" width="100px" x="-1px" y="-1px" valign="bottom" label="ADD BON" align="left" height="50px"/>
             </panel>
         </layer>
     </screen>

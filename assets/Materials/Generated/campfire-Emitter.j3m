@@ -1,0 +1,17 @@
+Material MyMaterial : Common/MatDefs/Misc/Particle.j3md {
+    MaterialParameters {
+        Quadratic : 10.0
+        Texture : Repeat Models/campfire/smoke.jpg
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Alpha
+      Wireframe Off
+    }
+}
