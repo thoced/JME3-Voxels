@@ -15,11 +15,13 @@ public class SingleGlobal {
     
     // GLOBAL VAR
     // GameMode
-    public enum Mode {BUILD,SELECT};
+    public enum Mode {BUILD,SELECT,ENTITY};
     private Mode gameMode;
     // Deplacement
     public enum ModeCamera {TRANSLATION,ROTATION,ZOOM};
     private ModeCamera cameraMode;
+    // Placement d'objet
+    private String nameEntityToBePlaced;
     
     
     private SingleGlobal(){
@@ -52,6 +54,17 @@ public class SingleGlobal {
     public void setGameMode(Mode gameMode) {
         this.gameMode = gameMode;
     }
+
+    public String getNameEntityToBePlaced() {
+        return nameEntityToBePlaced;
+    }
+
+    public void setNameEntityToBePlaced(String nameEntityToBePlaced) {
+        this.nameEntityToBePlaced = nameEntityToBePlaced;
+    }
+    
+    
+    
     
     
 }
