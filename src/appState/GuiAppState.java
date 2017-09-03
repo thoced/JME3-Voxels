@@ -99,6 +99,9 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
         Element niftyElement3 = nifty.getCurrentScreen().findElementById("buttonAddBon");
         niftyElement3.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddBon()", this));
         
+        Element niftyElement4 = nifty.getCurrentScreen().findElementById("buttonAddCamp");
+        niftyElement4.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddCamp()", this));
+        
         // ajout du niftyDisplay au Processeur GuiViewPort  
         app.getGuiViewPort().addProcessor(niftyDisplay);
 
@@ -186,17 +189,24 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
     
     public void buttonAdd(){
         typeAction = typeButtonAction.ADD;
+        SingleGlobal.getInstance().setNameEntityToBePlaced("");
         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.BUILD);
     }
     
     public void buttonSub(){
         typeAction = typeButtonAction.SUB;
+        SingleGlobal.getInstance().setNameEntityToBePlaced("");
         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.BUILD);
     }
     
     public void buttonAddBon(){
         typeAction = typeButtonAction.ADDBON;
-         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.SELECT);                                                                              N?????????????????????????????
+         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.SELECT);                                                                             
+    }
+    
+    public void buttonAddCamp(){
+        SingleGlobal.getInstance().setNameEntityToBePlaced("CAMPFIRE");
+        SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.ENTITY);
     }
     
     @Override
