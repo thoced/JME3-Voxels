@@ -8,6 +8,7 @@
                 <control name="button" id="buttonSub" childLayout="center" renderOrder="1" width="100px" x="10" y="134" label="Sub" align="left" height="50px"/>
                 <control name="button" id="buttonAdd" childLayout="center" renderOrder="2" width="100px" x="19" y="24" valign="top" label="Add" align="left" height="50px"/>
                 <control name="button" id="buttonAddBon" childLayout="center" renderOrder="0" width="100px" x="-1px" y="-1px" valign="bottom" label="ADD BON" align="left" height="50px"/>
+                <control name="button" id="buttonAddCamp" childLayout="center" x="-1px" width="64" y="-1px" valign="top" label="Camp" align="right" height="45px"/>
             </panel>
         </layer>
     </screen>
