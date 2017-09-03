@@ -5,6 +5,7 @@
  */
 package appState;
 
+import ModelsData.SingleGlobal;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -37,7 +38,7 @@ import mygame.VoxelAppState;
  */
 public class CameraScrollAppState extends AbstractAppState implements  ActionListener,AnalogListener {
        
-   // private SimpleApplication app;
+    private SimpleApplication app;
 
     private Camera cam;
     
@@ -237,7 +238,7 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
        }
            
         // rotation
-        Quaternion q = centerViewNodeCamera.getWorldRotation.clone();
+        Quaternion q = centerViewNodeCamera.getWorldRotation().clone();
         Quaternion nQ = new Quaternion();
         nQ.fromAngleAxis(rotateChoose, Vector3f.UNIT_Y);
         q.slerp(nQ, tpf * speedRotateLerp);
@@ -324,21 +325,24 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
                     
                     if(name.equals("CLIC_LEFT")){
                     
-                        if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADD)
-                        {
-                            // on récupère lecontact point
-                            Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
-                            voxel.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
-                        }
-                        else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.SUB)
-                        {
-                            // position du voxel a supprimer
-                              Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
-                             voxel.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
-                        }
-                         else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADDBON)
-                        {
-                            
+                        if(SingleGlobal.getInstance().getGameMode() == SingleGlobal.Mode.BUILD){
+                        
+                            if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADD)
+                            {
+                                // on récupère lecontact point
+                                Vector3f voxelPos = closest.getContactPoint().add(closest.getContactNormal().divide(2));
+                                voxel.addVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
+                            }
+                            else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.SUB)
+                            {
+                                // position du voxel a supprimer
+                                  Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
+                                 voxel.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
+                            }
+                             else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADDBON)
+                            {
+
+                            }
                         }
                         
                     }
