@@ -116,7 +116,7 @@ public class Chunk
       int width = _mapLoader.getWidthMap();
       int height =  _mapLoader.getHeightMap();
       
-      // reception du singleton uvselect
+      // reception du singlfeton uvselect
       SingleUvSelect uv = SingleUvSelect.getInstance();
           
         for(int z=(int)_worldPosition.y; z < (int)_worldPosition.y + 16 ;z++)

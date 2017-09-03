@@ -336,6 +336,11 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
                               Vector3f voxelPos = closest.getContactPoint().subtract(closest.getContactNormal().divide(2));
                              voxel.subVoxelToGrid(voxelPos.add(_offsetVoxel)); // offsetVoxel est égale au 0.5f de décallage
                         }
+                         else if(guiAppState.getTypeAction() == GuiAppState.typeButtonAction.ADDBON)
+                        {
+                            
+                        }
+                        
                     }
                     
                      /* if(name.equals("START_PATH")){
