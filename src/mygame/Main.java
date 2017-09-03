@@ -2,6 +2,7 @@ package mygame;
 
 import appState.AssetLoaderAppState;
 import appState.CameraScrollAppState;
+import appState.EntityAppState;
 import appState.FinderAppState;
 import appState.GuiAppState;
 import appState.MovementAppState;
@@ -72,6 +73,7 @@ public class Main extends SimpleApplication implements AnalogListener{
     private MovementAppState _movementAppState;
     private CameraScrollAppState _cameraAppState;
     private GuiAppState         _guiAppState;
+    private EntityAppState      _entityAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -126,15 +128,21 @@ public class Main extends SimpleApplication implements AnalogListener{
        _cameraAppState = new CameraScrollAppState();
        this.stateManager.attach(_cameraAppState);
        
+       // creation du EntityAppSate
+       _entityAppState = new EntityAppState();
+       this.stateManager.attach(_entityAppState);
+       
       
        
        // Light
        AmbientLight ambientLight = new AmbientLight();
-        ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
+       // ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
+       ambientLight.setColor(new ColorRGBA(0.01f,0.01f,0.01f,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();
-       directionalLight.setColor(new ColorRGBA(0.6f,0.6f,0.5f,1));
+     //  directionalLight.setColor(new ColorRGBA(0.6f,0.6f,0.5f,1));
+     directionalLight.setColor(new ColorRGBA(0.1f,0.1f,0.08f,1));
        directionalLight.setDirection(new Vector3f(0.5f,-0.8f,-0.3f).normalizeLocal());
        rootNode.addLight(directionalLight);
   
