@@ -6,9 +6,29 @@
 package appState;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.input.InputManager;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Quad;
+import com.jme3.texture.Texture;
+import com.jme3.util.BufferUtils;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyMethodInvoker;
 import de.lessvoid.nifty.controls.Button;
@@ -16,23 +36,44 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.java.games.input.Mouse;
 
 /**
  *
  * @author thonon
  */
-public class GuiAppState extends AbstractAppState implements ScreenController {
+public class GuiAppState extends AbstractAppState implements ActionListener,ScreenController {
+
+   
     
-    public enum typeButtonAction {ADD,SUB};
+    public enum typeButtonAction {ADD,SUB,ADDBON};
+    
+    // Référence vers le simpleapplication
+    SimpleApplication app;
+    // Référence vers l'input manager
+    InputManager input;
     
     private typeButtonAction typeAction;
+    
+    // Quad de sélection
+    private Mesh m_selectionQuad;
+    private Vector2f m_VectorSelectionStart;
+    private boolean  m_isSelection = false;
+    private Geometry m_geoSelection;
     
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
     
+        // copie des références
+        this.app = (SimpleApplication)app;
+        this.input = app.getInputManager();
+        
+        // instance du NiftyJmeDisplay
         NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
         app.getAssetManager(), app.getInputManager(), app.getAudioRenderer(), app.getGuiViewPort());
          /** Create a new NiftyGUI object */
@@ -44,27 +85,68 @@ public class GuiAppState extends AbstractAppState implements ScreenController {
             Logger.getLogger(GuiAppState.class.getName()).log(Level.SEVERE, null, ex);
         }
     
-    nifty.registerScreenController(this);
-    nifty.fromXml("Interface/IUBase.xml", "start");
-    
-   
-    Element niftyElement = nifty.getCurrentScreen().findElementById("buttonAdd");
-    niftyElement.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAdd()", this));
-    
-    Element niftyElement2 = nifty.getCurrentScreen().findElementById("buttonSub");
-    niftyElement2.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonSub()", this));
-    
-    
-    // nifty.fromXml("Interface/helloworld.xml", "start", new MySettingsScreen(data));
-    // attach the Nifty display to the gui view port as a processor
-      
-    app.getGuiViewPort().addProcessor(niftyDisplay);
+        nifty.registerScreenController(this);
+        nifty.fromXml("Interface/IUBase.xml", "start");
+
+        // ajout des action liées aux boutons
+        Element niftyElement = nifty.getCurrentScreen().findElementById("buttonAdd");
+        niftyElement.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAdd()", this));
+
+        Element niftyElement2 = nifty.getCurrentScreen().findElementById("buttonSub");
+        niftyElement2.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonSub()", this));
+
+        Element niftyElement3 = nifty.getCurrentScreen().findElementById("buttonAddBon");
+        niftyElement3.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddBon()", this));
+
+        // ajout du niftyDisplay au Processeur GuiViewPort  
+        app.getGuiViewPort().addProcessor(niftyDisplay);
+
+        // initialisation du systeme de sélection
+        m_selectionQuad = new Mesh();
+        Collection<Vector3f> vBuff = new ArrayList<Vector3f>();
+        vBuff.add(new Vector3f(0,0,0));
+        vBuff.add(new Vector3f(1,0,0));
+        vBuff.add(new Vector3f(1,1,0));
+        vBuff.add(new Vector3f(0,1,0));
+        // set buffer
+        Vector3f[] vb = vBuff.toArray(new Vector3f[vBuff.size()]);
+        m_selectionQuad.setBuffer(Type.Position,3,BufferUtils.createFloatBuffer(vb));
+        
+        m_selectionQuad.setMode(Mesh.Mode.LineLoop);
+        m_geoSelection= new Geometry("selectionQuad",m_selectionQuad);
+        Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Yellow);
+        mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
+        mat.getAdditionalRenderState().setLineWidth(2f);
+        m_geoSelection.setMaterial(mat);
+        m_geoSelection.setQueueBucket(RenderQueue.Bucket.Gui);
+        m_geoSelection.setCullHint(Spatial.CullHint.Always);
+        
+        this.app.getGuiNode().attachChild(m_geoSelection);
+
+        // initilisation des Input
+        this.input.addListener(this, "CLIC_SELECTION");
+        this.input.addMapping("CLIC_SELECTION", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+     
+       /** An unshaded textured cube. 
+ *  Uses texture from jme3-test-data library! */ 
 
     }
+
+       
     
     @Override
     public void update(float tpf) {
-        //TODO: implement behavior during runtime
+       
+       if(m_isSelection){
+           m_geoSelection.setLocalTranslation(m_VectorSelectionStart.x, m_VectorSelectionStart.y, 0);
+           // reception de la position actuelle du cursor
+           Vector2f v = this.input.getCursorPosition().clone();
+           Vector2f diff = v.subtract(m_VectorSelectionStart);
+           m_geoSelection.setLocalScale(new Vector3f(diff.x,diff.y,0));
+       }
+        
+        
     }
     
     @Override
@@ -111,4 +193,26 @@ public class GuiAppState extends AbstractAppState implements ScreenController {
          System.out.println("SUB");
     }
     
+    public void buttonAddBon(){
+        typeAction = typeButtonAction.ADDBON;
+        System.out.println("ADD BON");
+    }
+    
+    @Override
+    public void onAction(String name, boolean isPressed, float tpf) {
+        
+        if(name.equals("CLIC_SELECTION")){
+            if(isPressed){
+                // début de crétion du rectangle de sélection
+                m_isSelection = true;
+                m_geoSelection.setCullHint(Spatial.CullHint.Never);
+                m_VectorSelectionStart = this.input.getCursorPosition().clone();
+            }
+            else{
+                // fin du rectangle
+                m_isSelection = false;
+                m_geoSelection.setCullHint(Spatial.CullHint.Always);
+            }
+        }
+    }
 }
