@@ -102,6 +102,9 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
         Element niftyElement4 = nifty.getCurrentScreen().findElementById("buttonAddCamp");
         niftyElement4.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddCamp()", this));
         
+        Element niftyElement5 = nifty.getCurrentScreen().findElementById("buttonAddPlayer");
+        niftyElement5.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddPlayer()", this));
+       
         // ajout du niftyDisplay au Processeur GuiViewPort  
         app.getGuiViewPort().addProcessor(niftyDisplay);
 
@@ -121,7 +124,7 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
         Material mat = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Yellow);
         mat.getAdditionalRenderState().setFaceCullMode(RenderState.FaceCullMode.Off);
-        mat.getAdditionalRenderState().setLineWidth(2f);
+        mat.getAdditionalRenderState().setLineWidth(1f);
         m_geoSelection.setMaterial(mat);
         m_geoSelection.setQueueBucket(RenderQueue.Bucket.Gui);
         m_geoSelection.setCullHint(Spatial.CullHint.Always);
@@ -206,6 +209,11 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
     
     public void buttonAddCamp(){
         SingleGlobal.getInstance().setNameEntityToBePlaced("CAMPFIRE");
+        SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.ENTITY);
+    }
+    
+    public void buttonAddPlayer(){
+        SingleGlobal.getInstance().setNameEntityToBePlaced("PLAYER");
         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.ENTITY);
     }
     

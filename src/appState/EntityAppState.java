@@ -19,6 +19,7 @@ import com.jme3.light.PointLight;
 import com.jme3.light.SpotLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.awt.Color;
@@ -94,16 +95,27 @@ public class EntityAppState extends AbstractAppState implements ActionListener{
                    Vector3f contact = m_voxel.getCenterBlocSinceDirection(m_cam.getCam().getLocation(), dir);
                    // creation du camp
                    Spatial camp = m_app.getAssetManager().loadModel("Models/campfire/campfire.j3o");
-                   camp.setLocalTranslation(contact);;
+                   camp.setLocalTranslation(contact);
                    m_rootNodeEntity.attachChild(camp);
                    // Light
                    PointLight sl = new PointLight();
-                   sl.setPosition(contact);
+                   sl.setPosition(contact.add(new Vector3f(0f,0.1f,0f)));
                    sl.setColor(ColorRGBA.Red);
                    sl.setRadius(3f);
                    m_app.getRootNode().addLight(sl);
                    
+                }else  if(SingleGlobal.getInstance().getNameEntityToBePlaced().equals("PLAYER")){
+                    // ajout du player
+                   Vector3f dir = m_cam.getDirectionCursor();
+                   Vector3f contact = m_voxel.getCenterBlocSinceDirection(m_cam.getCam().getLocation(), dir);
+                   // creation du camp
+                   Spatial camp = m_app.getAssetManager().loadModel("Models/rigged/bon.j3o");
+                   camp.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                   camp.setLocalTranslation(contact);
+                   m_rootNodeEntity.attachChild(camp);
                 }
+                
+                
             }
         }
     }

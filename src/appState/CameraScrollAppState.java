@@ -92,6 +92,7 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         
         nodeCamera = new Node();
         centerViewNodeCamera = new Node();
+        centerViewNodeCamera.setLocalTranslation(-32,32,32);
         posNew = centerViewNodeCamera.getWorldTranslation();
         
         centerViewNodeCamera.attachChild(nodeCamera);
