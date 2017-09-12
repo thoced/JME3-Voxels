@@ -23,6 +23,9 @@ public class SingleGlobal {
     // Placement d'objet
     private String nameEntityToBePlaced;
     
+    // PathFinder
+    
+    
     
     private SingleGlobal(){
         gameMode = Mode.SELECT;

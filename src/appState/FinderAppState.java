@@ -14,6 +14,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import mygame.MapLoader;
 import mygame.VoxelAppState;
 import pathfinding.AStarPathFinder;
@@ -25,9 +28,9 @@ import pathfinding.heuristics.ClosestSquaredHeuristic;
  *
  * @author thonon
  */
-public class FinderAppState extends AbstractAppState {
+public class FinderAppState extends AbstractAppState implements Callable<Path> {
     
-    private AStarPathFinder finder;
+    private AStarPathFinder m_finder;
     
     private Path path;
     
@@ -39,6 +42,10 @@ public class FinderAppState extends AbstractAppState {
     
     private SimpleApplication sApp;
     
+    // Thraed
+    private  ScheduledThreadPoolExecutor executor;
+    private Future future;
+    
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
@@ -48,32 +55,20 @@ public class FinderAppState extends AbstractAppState {
         VoxelAppState voxelAppState = stateManager.getState(VoxelAppState.class);
         map = voxelAppState.getMap();
         
-        finder = new AStarPathFinder(voxelAppState.getMap(),65535*4,true,new ClosestSquaredHeuristic());
+        m_finder = new AStarPathFinder(voxelAppState.getMap(),65535*4,true,new ClosestSquaredHeuristic());
         
         sApp = (SimpleApplication)app;
         
+        // Thread
+        executor = new ScheduledThreadPoolExecutor(4);
+      
+       
     }
     
     @Override
     public void update(float tpf) {
        
-        if(path != null){
-            
-            
-           // System.out.println("on a un chemin");
-          for(int i=0;i<path.getLength();i++){ 
-            Sphere sphere = new Sphere(30, 30, 0.2f);
-            Geometry _mark = new Geometry("BOOM!", sphere);
-            Material mark_mat = new Material(sApp.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-            mark_mat.setColor("Color", ColorRGBA.Red);
-            _mark.setMaterial(mark_mat);
-            _mark.setName("AAA");
-            _mark.setLocalTranslation(path.getX(i), path.getY(i), path.getZ(i));
-            sApp.getRootNode().attachChild(_mark);
-            
-          }
-          path = null;
-        }
+       
         
     }
     
@@ -112,7 +107,7 @@ public class FinderAppState extends AbstractAppState {
         try
         {
         System.out.println("Lancement de la recherche...");
-        path = finder.findPath(null, sx, sy, sz, gx, gy, gz); // inversion des Y et Z
+        path = m_finder.findPath(null, sx, sy, sz, gx, gy, gz); // inversion des Y et Z
         System.out.println("Fin de la recherche...");
         if(path != null)
              System.out.println("Un chemin est trouvé...");
@@ -123,7 +118,15 @@ public class FinderAppState extends AbstractAppState {
         }
         
     }
+
+    @Override
+    public Path call() throws Exception {
+              
+        return null;
+    }
     
    
     
 }
+
+

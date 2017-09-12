@@ -1,0 +1,17 @@
+Material MyMaterial : Common/MatDefs/Misc/Unshaded.j3md {
+    MaterialParameters {
+        BackfaceShadows : true
+        ColorMap : Models/Utils/Select_Entity/select_entity.png
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Alpha
+      Wireframe Off
+    }
+}

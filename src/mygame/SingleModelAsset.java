@@ -20,10 +20,22 @@ public class SingleModelAsset
 
     private HashMap<String,Spatial> listAsset = new HashMap();
     
+    private AssetManager m_assetManager;
+    
     private SingleModelAsset(){
-       
+      
     }
 
+    public AssetManager getassetManager() {
+        return m_assetManager;
+    }
+
+    public void setassetManager(AssetManager m_assetManager) {
+        this.m_assetManager = m_assetManager;
+    }
+
+    
+    
     public HashMap<String, Spatial> getListAsset() {
         return listAsset;
     }

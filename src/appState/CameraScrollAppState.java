@@ -29,7 +29,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import controllers.bonController;
+import controllers.AvatarControl;
 import mygame.VoxelAppState;
 
 /**

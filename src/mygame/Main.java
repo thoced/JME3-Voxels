@@ -53,7 +53,7 @@ import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.BufferUtils;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
-import controllers.bonController;
+import controllers.AvatarControl;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -136,13 +136,13 @@ public class Main extends SimpleApplication implements AnalogListener{
        
        // Light
        AmbientLight ambientLight = new AmbientLight();
-       // ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
-       ambientLight.setColor(new ColorRGBA(0.01f,0.01f,0.01f,1));
+        ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
+       //ambientLight.setColor(new ColorRGBA(0.01f,0.01f,0.01f,1));
        rootNode.addLight(ambientLight);
        
        directionalLight = new DirectionalLight();
-     //  directionalLight.setColor(new ColorRGBA(0.6f,0.6f,0.5f,1));
-     directionalLight.setColor(new ColorRGBA(0.1f,0.1f,0.08f,1));
+       directionalLight.setColor(new ColorRGBA(0.6f,0.6f,0.5f,1));
+     //directionalLight.setColor(new ColorRGBA(0.1f,0.1f,0.08f,1));
        directionalLight.setDirection(new Vector3f(0.5f,-0.8f,-0.3f).normalizeLocal());
        rootNode.addLight(directionalLight);
   
@@ -153,11 +153,7 @@ public class Main extends SimpleApplication implements AnalogListener{
        // init camera
        this.initCamera();
  
-       //test bonhomme
-       bon = assetManager.loadModel("Models/bilou/bilou.j3o");
-       bon.addControl(new bonController());
-       bon.setShadowMode(RenderQueue.ShadowMode.Cast);
-       
+            
        // Fog
          /** Add fog to a scene */
         FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
