@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import appState.EntityAppState;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -25,7 +26,17 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mygame.SingleModelAsset;
+import mygame.VoxelAppState;
+import pathfinding.AStarPathFinder;
+import pathfinding.Path;
+import pathfinding.Path.Step;
+import pathfinding.heuristics.ClosestSquaredHeuristic;
 
 /**
  *
@@ -36,7 +47,11 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     //appear in the SDK properties window and can be edited.
     //Right-click a local variable to encapsulate it with getters and setters.
 
-    private float speed = 1f;
+    private EntityAppState m_entityAppState;
+    
+    private VoxelAppState m_voxelAppState;
+    
+    private float speed = 16f;
     
     private AnimControl m_animControl;
     
@@ -47,7 +62,25 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     private boolean isSelected = false;
     
     private Spatial m_selectedSpatial;
+    
+    private Path m_path = null;
+    
+    private int  m_indPath = 0;
+    
+    private boolean m_isStepDone = true;
+    
+    private Vector3f m_stepPosition;
+    
+ 
+    public AvatarControl(EntityAppState entityAppState,VoxelAppState voxelAppState) {
+        this.m_entityAppState = entityAppState;
+        this.m_voxelAppState = voxelAppState;
+        
+       
+    }
 
+    
+    
     public boolean isIsSelected() {
         return isSelected;
     }
@@ -60,6 +93,16 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
             m_selectedSpatial.setCullHint(Spatial.CullHint.Always);
         }
          
+    }
+
+    public Path getPath() {
+        return m_path;
+    }
+
+    public void setPath(Path path) {
+        this.m_path = path;
+        this.m_indPath=0;
+        this.m_isStepDone = true;
     }
 
     
@@ -101,15 +144,51 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
 
     public void setposDestination(Vector3f m_posDestination) {
         this.m_posDestination = m_posDestination;
+       
     }
     
     
 
     @Override
     protected void controlUpdate(float tpf) {
+         
+        if(m_path != null && m_isStepDone){
+            // on récupère le step suivant
+            if(m_path.getLength() > m_indPath + 1){
+                Step step  = m_path.getStep(m_indPath);
+                m_stepPosition = new Vector3f(step.getX(),step.getY(),step.getZ());
+                m_isStepDone = false;
+                m_indPath++;
+            }else{
+                m_path = null;
+                m_isStepDone = true;
+                m_indPath = 0;
+            }
+            
+        }else if(!m_isStepDone){
+            // si on est pas encore arrivé à la prochaine étape
+            // on doit déplacer l'avatar
+            //Vector3f dir = m_stepPosition.subtract(this.getSpatial().getLocalTranslation());
+           // dir.normalizeLocal();
+         //   this.getSpatial().getLocalTranslation().interpolateLocal(m_stepPosition, 0.25f);
+            
+           /* Vector3f p = this.getSpatial().getLocalTranslation();
+            p.interpolateLocal(m_stepPosition, tpf*this.getSpeed());
+            this.getSpatial().setLocalTranslation(p);*/
+            
+            Vector3f dir = m_stepPosition.subtract(this.getSpatial().getLocalTranslation());
+            dir.normalizeLocal();
+            Vector3f p = this.getSpatial().getLocalTranslation();
+            p.addLocal(dir.mult(tpf * 4));
+             this.getSpatial().setLocalTranslation(p);
+            
+         
+            if(this.getSpatial().getLocalTranslation().distance(m_stepPosition) < 0.1f)
+                m_isStepDone = true;
+        }
         
         
-       
+
     }
     
     @Override
@@ -119,7 +198,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     }
     
     public Control cloneForSpatial(Spatial spatial) {
-        AvatarControl control = new AvatarControl();
+        AvatarControl control = new AvatarControl(m_entityAppState,m_voxelAppState);
         control.setSpeed(speed);
         return control;
     }
@@ -147,5 +226,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
        
     }
+
+   
     
 }
