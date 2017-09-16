@@ -71,6 +71,8 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     
     private Vector3f m_stepPosition;
     
+    private Quaternion m_quaterPosition = new Quaternion();
+    
  
     public AvatarControl(EntityAppState entityAppState,VoxelAppState voxelAppState) {
         this.m_entityAppState = entityAppState;
@@ -156,7 +158,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
             // on récupère le step suivant
             if(m_path.getLength() > m_indPath + 1){
                 Step step  = m_path.getStep(m_indPath);
-                m_stepPosition = new Vector3f(step.getX(),step.getY(),step.getZ());
+                m_stepPosition = new Vector3f(step.getX(),step.getY()-0.5f,step.getZ());
                 m_isStepDone = false;
                 m_indPath++;
             }else{
@@ -168,23 +170,23 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
         }else if(!m_isStepDone){
             // si on est pas encore arrivé à la prochaine étape
             // on doit déplacer l'avatar
-            //Vector3f dir = m_stepPosition.subtract(this.getSpatial().getLocalTranslation());
-           // dir.normalizeLocal();
-         //   this.getSpatial().getLocalTranslation().interpolateLocal(m_stepPosition, 0.25f);
-            
-           /* Vector3f p = this.getSpatial().getLocalTranslation();
-            p.interpolateLocal(m_stepPosition, tpf*this.getSpeed());
-            this.getSpatial().setLocalTranslation(p);*/
-            
+                       
             Vector3f dir = m_stepPosition.subtract(this.getSpatial().getLocalTranslation());
             dir.normalizeLocal();
             Vector3f p = this.getSpatial().getLocalTranslation();
-            p.addLocal(dir.mult(tpf * 4));
+            p.addLocal(dir.mult(tpf * 2));
              this.getSpatial().setLocalTranslation(p);
             
          
             if(this.getSpatial().getLocalTranslation().distance(m_stepPosition) < 0.1f)
                 m_isStepDone = true;
+            
+            // rotation de l'avatar pour qu'il soit dirigé vers le sens de marche
+            dir.y = 0f;
+            m_quaterPosition.lookAt(dir, Vector3f.UNIT_Y);
+            this.getSpatial().getLocalRotation().nlerp(m_quaterPosition, tpf* speed);
+           
+            
         }
         
         

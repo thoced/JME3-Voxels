@@ -91,13 +91,16 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
         m_cam = stateManager.getState(CameraScrollAppState.class);
         //  input
         m_input.addListener(this, "ADD_ENTITY");
+        m_input.addListener(this, "MOUSE_DESELECT");
         m_input.addMapping("ADD_ENTITY", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        m_input.addMapping("MOUSE_DESELECT", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        
         // instance de RootNodeEntity
         m_rootNodeEntity = new Node();
         m_app.getRootNode().attachChild(m_rootNodeEntity);
         // initialisation du pathfinder
          VoxelAppState voxelAppState = stateManager.getState(VoxelAppState.class);
-         m_finder = new AStarPathFinder(this.m_voxel.getMap(),65535*4,true,new ClosestSquaredHeuristic());
+         m_finder = new AStarPathFinder(this.m_voxel.getMap(),65535*4,false,new ClosestSquaredHeuristic());
         
     }
 
@@ -201,41 +204,54 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
 
                     }
                 }else if(SingleGlobal.getInstance().getGameMode() == SingleGlobal.Mode.SELECT){
-                    // lancement d'un rayon pour déterminer si une entiteé est sélectionnée
-                    Ray r = new Ray(m_cam.getCam().getLocation(),m_cam.getDirectionCursor());
-                    CollisionResults results = new CollisionResults();
-                    m_rootNodeEntity.collideWith(r, results);
-                    if(results.size() > 0){
-                        CollisionResult collide = results.getClosestCollision();
-                        Geometry geoCollide = collide.getGeometry();
-                        AvatarControl ac = geoCollide.getParent().getControl(AvatarControl.class);
-                        if(ac != null){
-                           m_listEntitySelected.add(geoCollide.getParent());
-                           ac.setIsSelected(true);
-                        }
-                    }else{
-                            // aucun objet n'est touché par le rayon
-                            if(m_listEntitySelected.size() > 0){
-                             Vector3f contactPos = m_voxel.getCenterBlocSinceDirection(m_cam.getCam().getLocation(), m_cam.getDirectionCursor());
-                             if(contactPos != null){
-                                 for(Spatial sp : m_listEntitySelected){
-                                    AvatarControl avatarControl = sp.getControl(AvatarControl.class);
-                                    if(avatarControl != null){
-                                       TaskFinder t = new TaskFinder(avatarControl,contactPos.clone());
-                                       m_taskFifo.add(t);
+                    
+                        if(name.equals("MOUSE_DESELECT")){
+                          // déselection des entitées sélectionnées    
+                         for(Spatial sp : m_listEntitySelected){
+                             AvatarControl avatarControl = sp.getControl(AvatarControl.class);
+                             if(avatarControl != null){
+                                avatarControl.setIsSelected(false);
+                               }
+                            }
+                             m_listEntitySelected.clear();
+                           
+                        }else {
+                                // lancement d'un rayon pour déterminer si une entiteé est sélectionnée
+                                Ray r = new Ray(m_cam.getCam().getLocation(),m_cam.getDirectionCursor());
+                                CollisionResults results = new CollisionResults();
+                                m_rootNodeEntity.collideWith(r, results);
+                                if(results.size() > 0){
+                                    CollisionResult collide = results.getClosestCollision();
+                                    Geometry geoCollide = collide.getGeometry();
+                                    AvatarControl ac = geoCollide.getParent().getControl(AvatarControl.class);
+                                    if(ac != null){
+                                       m_listEntitySelected.add(geoCollide.getParent());
+                                       ac.setIsSelected(true);
                                     }
-                             }
-                            }else{
-                                    for(Spatial sp : m_listEntitySelected){
-                                    AvatarControl avatarControl = sp.getControl(AvatarControl.class);
-                                    if(avatarControl != null){
-                                        avatarControl.setIsSelected(false);
+                                }else{
+                                        // aucun objet n'est touché par le rayon
+                                        if(m_listEntitySelected.size() > 0){
+                                         Vector3f contactPos = m_voxel.getCenterBlocSinceDirection(m_cam.getCam().getLocation(), m_cam.getDirectionCursor());
+                                         if(contactPos != null){
+                                             for(Spatial sp : m_listEntitySelected){
+                                                AvatarControl avatarControl = sp.getControl(AvatarControl.class);
+                                                if(avatarControl != null){
+                                                   TaskFinder t = new TaskFinder(avatarControl,contactPos.clone());
+                                                   m_taskFifo.add(t);
+                                                }
+                                         }
+                                        }else{
+                                                for(Spatial sp : m_listEntitySelected){
+                                                AvatarControl avatarControl = sp.getControl(AvatarControl.class);
+                                                if(avatarControl != null){
+                                                    avatarControl.setIsSelected(false);
+                                                }
+                                            }
+                                            m_listEntitySelected.clear();
+                                        }
                                     }
                                 }
-                                m_listEntitySelected.clear();
-                            }
-                        }
-                    
+
                     
                 }
         }

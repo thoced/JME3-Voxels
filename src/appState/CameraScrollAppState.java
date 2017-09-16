@@ -102,13 +102,13 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
         
         // désactivation du curseur
         input.setCursorVisible(true);
-        input.addListener(this, "MOUSE_CLICK_RIGHT");
+        input.addListener(this, "MOUSE_CLICK_ROTATE");
         input.addListener(this, "MOUSE_ROTATE_RIGHT");
         input.addListener(this, "MOUSE_ROTATE_LEFT");
         
         input.addMapping("MOUSE_ROTATE_RIGHT", new MouseAxisTrigger(MouseInput.AXIS_X,true));
         input.addMapping("MOUSE_ROTATE_LEFT", new MouseAxisTrigger(MouseInput.AXIS_X,false));
-        input.addMapping("MOUSE_CLICK_RIGHT", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        input.addMapping("MOUSE_CLICK_ROTATE", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
         
         // centre screen
         centerScreen = new Vector2f(cam.getWidth()/2f,cam.getHeight()/2);
@@ -303,7 +303,7 @@ public class CameraScrollAppState extends AbstractAppState implements  ActionLis
     @Override
     public void onAction(String name, boolean isPressed, float f) {
        
-        if(name.equals("MOUSE_CLICK_RIGHT")){
+        if(name.equals("MOUSE_CLICK_ROTATE")){
             activeRotation = isPressed;
             if(activeRotation)
                  nodeCursorRotation.setCullHint(Spatial.CullHint.Never);
