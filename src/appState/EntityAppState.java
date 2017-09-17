@@ -100,7 +100,8 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
         m_app.getRootNode().attachChild(m_rootNodeEntity);
         // initialisation du pathfinder
          VoxelAppState voxelAppState = stateManager.getState(VoxelAppState.class);
-         m_finder = new AStarPathFinder(this.m_voxel.getMap(),65535*4,false,new ClosestSquaredHeuristic());
+      //   m_finder = new AStarPathFinder(this.m_voxel.getMap(),65535*4,false,new ClosestSquaredHeuristic());
+         m_finder = new AStarPathFinder(this.m_voxel.getMap(),65535*4,false);
         
     }
 
