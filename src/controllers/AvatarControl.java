@@ -65,7 +65,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
     
     private Path m_path = null;
     
-    private int  m_indPath = 0;
+    private int  m_indPath = 1;
     
     private boolean m_isStepDone = true;
     
@@ -146,7 +146,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
 
     public void setposDestination(Vector3f m_posDestination) {
         this.m_posDestination = m_posDestination;
-       
+        
     }
     
     
@@ -156,7 +156,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
          
         if(m_path != null && m_isStepDone){
             // on récupère le step suivant
-            if(m_path.getLength() > m_indPath + 1){
+            if(m_path.getLength() > m_indPath){
                 Step step  = m_path.getStep(m_indPath);
                 m_stepPosition = new Vector3f(step.getX(),step.getY()-0.5f,step.getZ());
                 m_isStepDone = false;
@@ -164,7 +164,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
             }else{
                 m_path = null;
                 m_isStepDone = true;
-                m_indPath = 0;
+                m_indPath = 1;
             }
             
         }else if(!m_isStepDone){
@@ -178,7 +178,7 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
              this.getSpatial().setLocalTranslation(p);
             
          
-            if(this.getSpatial().getLocalTranslation().distance(m_stepPosition) < 0.1f)
+            if(this.getSpatial().getLocalTranslation().distance(m_stepPosition) < 0.025f)
                 m_isStepDone = true;
             
             // rotation de l'avatar pour qu'il soit dirigé vers le sens de marche
