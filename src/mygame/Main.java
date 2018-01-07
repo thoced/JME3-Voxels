@@ -1,6 +1,7 @@
 package mygame;
 
 import appState.AssetLoaderAppState;
+import appState.BuilderAppState;
 import appState.CameraScrollAppState;
 import appState.EntityAppState;
 import appState.FinderAppState;
@@ -74,6 +75,7 @@ public class Main extends SimpleApplication implements AnalogListener{
     private CameraScrollAppState _cameraAppState;
     private GuiAppState         _guiAppState;
     private EntityAppState      _entityAppState;
+    private BuilderAppState     _builderAppState;
     
     private DirectionalLight directionalLight;
     private Vector3f[] dirLight;
@@ -132,8 +134,10 @@ public class Main extends SimpleApplication implements AnalogListener{
        _entityAppState = new EntityAppState();
        this.stateManager.attach(_entityAppState);
        
-      
-       
+       // creation du BuilderAppStae
+       _builderAppState = new BuilderAppState();
+       this.stateManager.attach(_builderAppState);
+
        // Light
        AmbientLight ambientLight = new AmbientLight();
         ambientLight.setColor(new ColorRGBA(0.04f,0.075f,0.075f,1));
@@ -191,7 +195,9 @@ public class Main extends SimpleApplication implements AnalogListener{
        // sky
        getRootNode().attachChild(SkyFactory.createSky(getAssetManager(), "Textures/Sky/Skysphere.jpg", SkyFactory.EnvMapType.SphereMap));
        
+
       
+       
     }
     
     private void initCamera()

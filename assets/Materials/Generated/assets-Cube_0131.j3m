@@ -1,0 +1,19 @@
+Material MyMaterial : Common/MatDefs/Light/PBRLighting.j3md {
+    MaterialParameters {
+        ParallaxHeight : 0.05
+        BackfaceShadows : false
+        PackedNormalParallax : false
+        BaseColorMap : Flip checkbox/checkbox.png
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Off
+      Wireframe Off
+    }
+}

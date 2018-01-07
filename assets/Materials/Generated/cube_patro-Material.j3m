@@ -1,0 +1,17 @@
+Material patroMat : Common/MatDefs/Misc/Unshaded.j3md {
+    MaterialParameters {
+        BackfaceShadows : true
+        ColorMap : Repeat Models/Utils/Patro/diffuse_patro.png
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Off
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Alpha
+      Wireframe Off
+    }
+}

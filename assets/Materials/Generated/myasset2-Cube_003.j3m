@@ -1,0 +1,25 @@
+Material MyMaterial : Common/MatDefs/Light/PBRLighting.j3md {
+    MaterialParameters {
+        EmissivePower : 1.0
+        BaseColor : 1.0 1.0 1.0 1.0
+        ParallaxHeight : 0.05
+        Metallic : 0.0
+        BackfaceShadows : false
+        Roughness : 5.0
+        Emissive : 0.0 0.0 0.0 1.0
+        NormalMap : Models/assets/TexturesCom_rock_NORMAL.png
+        EmissiveIntensity : 0.0
+        BaseColorMap : Models/assets/pannel.png
+    }
+    AdditionalRenderState {
+      PointSprite On
+      FaceCull Back
+      AlphaTestFalloff 0.0
+      DepthWrite On
+      ColorWrite On
+      PolyOffset 0.0 0.0
+      DepthTest On
+      Blend Off
+      Wireframe Off
+    }
+}

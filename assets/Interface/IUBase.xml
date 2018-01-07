@@ -10,6 +10,7 @@
                 <control name="button" id="buttonAddBon" childLayout="center" renderOrder="0" width="100px" x="-1px" y="-1px" valign="bottom" label="Selection" align="left" height="50px"/>
                 <control name="button" id="buttonAddCamp" childLayout="center" width="64" x="-1px" y="-1px" valign="top" label="Camp" align="right" height="45px"/>
                 <control name="button" id="buttonAddPlayer" childLayout="center" width="64px" x="-1px" y="-1px" style="nifty-button" valign="center" label="Bon" align="right" height="45px"/>
+                <control name="button" id="buttonEarthwork" childLayout="center" width="64px" valign="bottom" label="Earthwork" align="right" height="45px"/>
             </panel>
         </layer>
     </screen>

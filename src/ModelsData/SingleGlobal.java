@@ -15,7 +15,7 @@ public class SingleGlobal {
     
     // GLOBAL VAR
     // GameMode
-    public enum Mode {BUILD,SELECT,ENTITY};
+    public enum Mode {BUILD,EARTHWORK,SELECT,ENTITY};
     private Mode gameMode;
     // Deplacement
     public enum ModeCamera {TRANSLATION,ROTATION,ZOOM};

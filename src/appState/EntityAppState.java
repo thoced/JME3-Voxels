@@ -5,6 +5,7 @@
  */
 package appState;
 
+import appState.CameraScrollAppState;
 import ModelsData.SingleGlobal;
 import ModelsData.TaskFinder;
 import com.jme3.animation.AnimChannel;
@@ -255,7 +256,14 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
 
                     
                 }
-        }
+                        
+                        
+        }else if(SingleGlobal.getInstance().getGameMode() == SingleGlobal.Mode.EARTHWORK){
+                  // mode terrassement
+                  if(m_listEntitySelected.size() > 0){
+                      
+                  }
+                }
         
         
     }

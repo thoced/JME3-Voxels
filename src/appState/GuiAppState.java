@@ -105,6 +105,10 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
         Element niftyElement5 = nifty.getCurrentScreen().findElementById("buttonAddPlayer");
         niftyElement5.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonAddPlayer()", this));
        
+        Element niftyElement6 = nifty.getCurrentScreen().findElementById("buttonEarthwork");
+        niftyElement6.getElementInteraction().getPrimary().setOnClickMethod(new NiftyMethodInvoker(nifty, "buttonEarthwork()", this));
+       
+        
         // ajout du niftyDisplay au Processeur GuiViewPort  
         app.getGuiViewPort().addProcessor(niftyDisplay);
 
@@ -216,6 +220,12 @@ public class GuiAppState extends AbstractAppState implements ActionListener,Scre
         SingleGlobal.getInstance().setNameEntityToBePlaced("PLAYER");
         SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.ENTITY);
     }
+    
+    public void buttonEarthwork(){
+        SingleGlobal.getInstance().setNameEntityToBePlaced("");
+        SingleGlobal.getInstance().setGameMode(SingleGlobal.Mode.EARTHWORK);
+    }
+            
     
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
