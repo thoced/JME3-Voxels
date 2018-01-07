@@ -29,7 +29,7 @@ public class AssetLoaderAppState extends AbstractAppState {
         modelAsset.getListAsset().put("tree01", app.getAssetManager().loadModel("Models/Trees/Tree01/tree01.j3o"));
         
          // chargement des spatials
-        modelAsset.getListAsset().put("avatar",app.getAssetManager().loadModel("Models/avatar/avatar.j3o"));
+        modelAsset.getListAsset().put("avatar",app.getAssetManager().loadModel("Models/avatar03/avatar.j3o"));
         modelAsset.getListAsset().put("select_entity",app.getAssetManager().loadModel("Models/Utils/Select_Entity/select_entity.j3o"));
      
        

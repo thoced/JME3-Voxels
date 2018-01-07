@@ -196,6 +196,7 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
                            Vector3f contact = m_voxel.getCenterBlocSinceDirection(m_cam.getCam().getLocation(), dir);
                            // creation de l'avatar
                            Spatial avatar = SingleModelAsset.getInstance().getListAsset().get("avatar").clone();
+                           avatar.setLocalScale(0.5f);
                            AvatarControl ac = new AvatarControl(this,m_voxel);
                            avatar.addControl(ac);
                            avatar.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
@@ -223,6 +224,7 @@ public class EntityAppState extends AbstractAppState implements ActionListener, 
                                 m_rootNodeEntity.collideWith(r, results);
                                 if(results.size() > 0){
                                     CollisionResult collide = results.getClosestCollision();
+                                    System.out.println(collide.getGeometry().getName());
                                     Geometry geoCollide = collide.getGeometry();
                                     AvatarControl ac = geoCollide.getParent().getControl(AvatarControl.class);
                                     if(ac != null){

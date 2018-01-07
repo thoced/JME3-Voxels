@@ -125,9 +125,10 @@ public class AvatarControl extends AbstractControl implements AnimEventListener 
         if(m_animControl != null){
             m_animChanel = m_animControl.createChannel();
             m_animControl.addListener(this);
-            m_animChanel.setLoopMode(LoopMode.Loop);
-            m_animChanel.setSpeed(1f);
-            m_animChanel.setAnim("headspin");
+            m_animChanel.setLoopMode(LoopMode.DontLoop);
+            m_animChanel.setSpeed(0f);
+            m_animChanel.setAnim("walk");
+            m_animChanel.setTime(0f);
         }
         
         // réception du modele de sélection
